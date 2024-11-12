@@ -17,7 +17,7 @@ export class PersonController{
        return this.personService.getInfoUser();
     }
 
-    @Post()
+    @Post("/search")
     async getPerson(@Body() person){
        return await this.personService.searchPerson(person)
     }
@@ -32,7 +32,7 @@ export class PersonController{
         return await this.personService.updatePerson(document,person);
     }
 
-    @Patch(':documento')
+    @Patch(':document')
     async updateUser(@Param('document',ParseIntPipe) document: number, @Body() user){
         return await this.personService.updateStateUser(document,user)
     }

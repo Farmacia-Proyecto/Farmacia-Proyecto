@@ -27,15 +27,11 @@ export class PersonService {
     }
 
     searchPerson(person:SearchPerson){
-        if(person.document){
-            return this.getPerson(person.document)
-        }
         if(person.namePerson){
-            return this.personRepository.findOne({
-                where:{
-                    namePerson:person.namePerson
-                }
-            })
+            return this.personRepository.createQueryBuilder('person')
+            .where('person.namePerson LIKE :namePerson', { namePerson: `%${person.namePerson}%` })
+            .orWhere('person.lastNamePerson LIKE :lastNamePerson', {lastNamePerson: `%${person.namePerson}%`})
+            .getMany();
         }
     }
 
