@@ -26,12 +26,26 @@ export class PersonService {
         })
     }
 
-    searchPerson(person:SearchPerson){
+    async searchPerson(person:SearchPerson){
         if(person.namePerson){
-            return this.personRepository.createQueryBuilder('person')
+            const persons = await this.personRepository.createQueryBuilder('person')
             .where('person.namePerson LIKE :namePerson', { namePerson: `%${person.namePerson}%` })
             .orWhere('person.lastNamePerson LIKE :lastNamePerson', {lastNamePerson: `%${person.namePerson}%`})
             .getMany();
+            let i =0;
+            let info = []
+            while(i<persons.length){
+                info[i]= {
+                    "document":persons[i].document,
+                    "name":persons[i].namePerson,
+                    "lastName":persons[i].lastNamePerson,
+                    "email":persons[i].email,
+                    "typeUser": (await this.getPerson(persons[i].document)).user.typeUser,
+                    "state": this.getStateUser((await this.getPerson(persons[i].document)).user.state)
+                }
+                i++
+            }
+            return info
         }
     }
 
