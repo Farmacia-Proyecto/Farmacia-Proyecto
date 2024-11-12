@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { infoPerson } from './dto/create-person.dto';
 import { SearchPerson } from './dto/search-person.dto';
+import { UpdateUserDto } from 'src/user/dto/update-password-user.dto';
 
 @Injectable()
 export class PersonService {
@@ -60,7 +61,12 @@ export class PersonService {
     }
 
     updatePerson(document: number, person){
-        return this.personRepository.update({document},person)
+        return this.personRepository.update({document},person),{status:200}
+    }
+
+    async updateStateUser(document:number,user:UpdateUserDto){
+        const doc = await this.getPerson(document)
+        return this.userService.updateUser(doc.user.userName,user)
     }
 
     async getInfoUser(){

@@ -31,4 +31,9 @@ export class PersonController{
     async updatePerson(@Param('document',ParseIntPipe) document: number, @Body() person){
         return await this.personService.updatePerson(document,person);
     }
+
+    @Patch(':documento')
+    async updateUser(@Param('document',ParseIntPipe) document: number, @Body() user){
+        return await this.personService.updateStateUser(document,user)
+    }
 }
