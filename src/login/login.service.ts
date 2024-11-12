@@ -14,7 +14,7 @@ export class LoginService {
     async authUser(user:AuthUser){
         const userfound = await this.userService.checkUser(user)
         if(!userfound) 
-            return new HttpException("Acceso denegado",400)
+            return new HttpException("Acceso denegado",401)
         const payload = {userName:userfound.userName,typeUser:userfound.typeUser}
         return this.generateToken(payload);
     }

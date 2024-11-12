@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { PersonService } from "./person.service";
 import { Person } from "./person.entity";
 import { AuthGuard } from "src/login/login.guard";
@@ -17,9 +17,9 @@ export class PersonController{
        return this.personService.getInfoUser();
     }
 
-    @Get(':document')
-    async getPerson(@Param('document', ParseIntPipe) document: number){
-       return await this.personService.getPerson(document);
+    @Post()
+    async getPerson(@Body() person){
+       return await this.personService.searchPerson(person)
     }
 
     @Post()
@@ -27,7 +27,7 @@ export class PersonController{
         return await this.personService.createPerson(person);
     }
     
-    @Patch(':document')
+    @Put(':document')
     async updatePerson(@Param('document',ParseIntPipe) document: number, @Body() person){
         return await this.personService.updatePerson(document,person);
     }

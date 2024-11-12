@@ -40,7 +40,7 @@ export class UserService {
         const user:User= {
             "userName": userName,
             "password": this.generarContrasena(),
-            "typeUser": userDto.typeUser,
+            "typeUser": userDto.typeUser.toUpperCase(),
             "state": true
         };
         const newUser = this.userRepository.create(user)

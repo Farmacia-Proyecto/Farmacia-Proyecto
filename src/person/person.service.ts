@@ -1,12 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Person } from './person.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { infoPerson } from './dto/create-person.dto';
-import { infoUsers } from 'src/user/dto/get-users.dto';
-import { User } from 'src/user/user.entity';
-import { loadEnvFile } from 'process';
+import { SearchPerson } from './dto/search-person.dto';
 
 @Injectable()
 export class PersonService {
@@ -27,17 +25,33 @@ export class PersonService {
         })
     }
 
+    searchPerson(person:SearchPerson){
+        if(person.document){
+            return this.getPerson(person.document)
+        }
+        if(person.namePerson){
+            return this.personRepository.findOne({
+                where:{
+                    namePerson:person.namePerson
+                }
+            })
+        }
+    }
+
     async createPerson(infoPerson: infoPerson){
         console.log(infoPerson.namePerson)
+        const personFound = this.getPerson(infoPerson.document)
+        if(personFound){
+            return new HttpException("Esta persona ya se encuentra registrada",409)
+        }
         const person = {
-            "typeDocument":infoPerson.typeDocument,
+            "typeDocument":infoPerson.typeDocument.toUpperCase(),
             "document":infoPerson.document,
-            "namePerson":infoPerson.namePerson,
-            "lastNamePerson":infoPerson.lastNamePerson,
+            "namePerson":infoPerson.namePerson.toUpperCase(),
+            "lastNamePerson":infoPerson.lastNamePerson.toUpperCase(),
             "phone":infoPerson.phone,
             "email":infoPerson.email
         }
-
         const newPerson = this.personRepository.create(person)
         const user = await this.userService.createUser({"person":newPerson,"typeUser":infoPerson.typeUser})
         newPerson.user = user
@@ -55,14 +69,22 @@ export class PersonService {
         let infoUser = []
         while(i < users.length){
             infoUser[i]={
-                "userName":users[i].user.userName,
-                "fullName":users[i].namePerson.concat(" " + users[i].lastNamePerson),
+                "document":users[i].document,
+                "name":users[i].namePerson,
+                "lastName":users[i].lastNamePerson,
                 "email":users[i].email,
-                "typeUser":users[i].user.typeUser
+                "typeUser":users[i].user.typeUser,
+                "state": this.getStateUser(users[i].user.state)
             }
             i++
         }
-        return infoUser;
+        return {"users":infoUser};
     }
 
+    getStateUser(state){
+        if(state){
+            return "ACTIVO"
+        }
+        return "INACTIVO"
+    }
 }

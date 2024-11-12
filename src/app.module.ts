@@ -7,6 +7,7 @@ import { LoginController } from './login/login.controller';
 import { LoginModule } from './login/login.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './login/constants';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { jwtConstants } from './login/constants';
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule],
+    UserModule,PersonModule,LoginModule, ProductsModule],
   providers: [LoginService],
   controllers: [LoginController],
 })
