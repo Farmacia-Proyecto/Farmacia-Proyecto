@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Person } from './person.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -65,18 +65,18 @@ export class PersonService {
             const user = await this.userService.createUser({"person":newPerson,"typeUser":infoPerson.typeUser})
             newPerson.user = user
            
-            return await this.personRepository.save(newPerson)
+            return await this.personRepository.save(newPerson),HttpStatus.CREATED
         }
-        return new HttpException("Esta persona ya se encuentra registrada",409)
+        return HttpStatus.NOT_ACCEPTABLE
     }
 
     updatePerson(document: number, person){
-        return this.personRepository.update({document},person),{status:200}
+        return this.personRepository.update({document},person),HttpStatus.ACCEPTED
     }
 
     async updateStateUser(document:number,user:UpdateUserDto){
         const doc = await this.getPerson(document)
-        return this.userService.updateUser(doc.user.userName,user)
+        return this.userService.updateUser(doc.user.userName,user),HttpStatus.ACCEPTED
     }
 
     async getInfoUser(){
@@ -95,7 +95,7 @@ export class PersonService {
             i++
         }
         console.log(infoUser)
-        return {"users":infoUser};
+        return HttpStatus.ACCEPTED,{"users":infoUser};
     }
 
     getStateUser(state){

@@ -11,6 +11,7 @@ import { ProductModule } from './product/product.module';
 import { LotModule } from './lot/lot.module';
 import { LotService } from './lot/lot.service';
 import { LotController } from './lot/lot.controller';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { LotController } from './lot/lot.controller';
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule, ProductModule, LotModule],
+    UserModule,PersonModule,LoginModule, ProductModule, LotModule, EmailModule],
   providers: [LoginService, LotService],
   controllers: [LoginController, LotController],
 })
