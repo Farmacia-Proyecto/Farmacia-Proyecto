@@ -7,7 +7,10 @@ import { LoginController } from './login/login.controller';
 import { LoginModule } from './login/login.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './login/constants';
-import { ProductsModule } from './products/products.module';
+import { ProductModule } from './product/product.module';
+import { LotModule } from './lot/lot.module';
+import { LotService } from './lot/lot.service';
+import { LotController } from './lot/lot.controller';
 
 @Module({
   imports: [
@@ -19,15 +22,15 @@ import { ProductsModule } from './products/products.module';
       password: 'root',
       database: 'pharmacyproject',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true
+      //synchronize: true
     }),
     JwtModule.register({
       global: true,
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule, ProductsModule],
-  providers: [LoginService],
-  controllers: [LoginController],
+    UserModule,PersonModule,LoginModule, ProductModule, LotModule],
+  providers: [LoginService, LotService],
+  controllers: [LoginController, LotController],
 })
 export class AppModule {}

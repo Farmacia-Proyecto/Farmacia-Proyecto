@@ -1,5 +1,6 @@
+import { Lot } from "src/lot/lot.entity";
 import { User } from "src/user/user.entity";
-import { Column, Entity, JoinColumn,OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn,OneToMany,OneToOne, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Person{

@@ -45,29 +45,29 @@ export class PersonService {
                 }
                 i++
             }
-            return info
+            return {"users":info}
         }
     }
 
     async createPerson(infoPerson: infoPerson){
-        console.log(infoPerson.namePerson)
-        const personFound = this.getPerson(infoPerson.document)
-        if(personFound){
-            return new HttpException("Esta persona ya se encuentra registrada",409)
+        const personFound = await this.getPerson(infoPerson.document)
+        if(personFound==null){
+            console.log("Entre a crear usuarios")
+            const person = {
+                "typeDocument":infoPerson.typeDocument.toUpperCase(),
+                "document":infoPerson.document,
+                "namePerson":infoPerson.namePerson.toUpperCase(),
+                "lastNamePerson":infoPerson.lastNamePerson.toUpperCase(),
+                "phone":infoPerson.phone,
+                "email":infoPerson.email
+            }
+            const newPerson = this.personRepository.create(person)
+            const user = await this.userService.createUser({"person":newPerson,"typeUser":infoPerson.typeUser})
+            newPerson.user = user
+           
+            return await this.personRepository.save(newPerson)
         }
-        const person = {
-            "typeDocument":infoPerson.typeDocument.toUpperCase(),
-            "document":infoPerson.document,
-            "namePerson":infoPerson.namePerson.toUpperCase(),
-            "lastNamePerson":infoPerson.lastNamePerson.toUpperCase(),
-            "phone":infoPerson.phone,
-            "email":infoPerson.email
-        }
-        const newPerson = this.personRepository.create(person)
-        const user = await this.userService.createUser({"person":newPerson,"typeUser":infoPerson.typeUser})
-        newPerson.user = user
-       
-        return await this.personRepository.save(newPerson)
+        return new HttpException("Esta persona ya se encuentra registrada",409)
     }
 
     updatePerson(document: number, person){
@@ -94,6 +94,7 @@ export class PersonService {
             }
             i++
         }
+        console.log(infoUser)
         return {"users":infoUser};
     }
 
