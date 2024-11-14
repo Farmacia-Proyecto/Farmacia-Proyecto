@@ -1,5 +1,5 @@
 export class UpdateUserDto{
-    curentPassword?:string
+    userName?:string
+    currentPassword?:string
     newPassword?:string
-    state?:boolean
 }

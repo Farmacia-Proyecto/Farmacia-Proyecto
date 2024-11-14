@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -26,7 +26,6 @@ export class UserService {
     }
 
     async createUser(userDto: CreateUserDto){
-        console.log(userDto.person.namePerson)
         let userName = userDto.person.namePerson.split(" ")[0].concat(userDto.person.lastNamePerson.split(" ")[0])
         
         let userFound = await this.getUser(userName)
@@ -48,8 +47,27 @@ export class UserService {
         return this.userRepository.save(newUser)
     }
 
-    updateUser(userName: string,password:UpdateUserDto){
-        return this.userRepository.update({userName},password)
+    async updateUser(userName: string,state){
+        return this.userRepository.update({userName},state)
+    }
+
+    async updatePassword(info:UpdateUserDto){
+        const userFound = await this.getUser(info.userName);
+        const currentPassword = info.currentPassword;
+        const password = info.newPassword;
+        if(userFound!=null){
+            if(this.checkPassword(currentPassword,userFound.password)){
+                return this.userRepository.update(userFound.userName,{password}),HttpStatus.ACCEPTED,{'success':true}
+            }
+        }
+        return HttpStatus.NOT_ACCEPTABLE,{'success':false}
+    }
+
+    private checkPassword(passwordSystem,password){
+        if(password==passwordSystem){
+            return true;
+        }
+        return false;
     }
 
     checkUser(user:AuthUser){
@@ -69,6 +87,6 @@ export class UserService {
           contrasena += caracteres[indiceAleatorio];
         }
         return contrasena;
-      }
+    }
 }
 
