@@ -67,7 +67,7 @@ export class PersonService {
            
             return await this.personRepository.save(newPerson),HttpStatus.CREATED,{"success":true}
         }
-        return HttpStatus.NOT_ACCEPTABLE
+        return HttpStatus.NOT_ACCEPTABLE,{"success":false}
     }
 
     updatePerson(document: number, person){
