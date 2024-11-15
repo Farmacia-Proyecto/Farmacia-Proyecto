@@ -1,4 +1,4 @@
-export class UpdateUserDto{
+export class UpdateUserPasswordDto{
     userName?:string
     currentPassword?:string
     newPassword?:string

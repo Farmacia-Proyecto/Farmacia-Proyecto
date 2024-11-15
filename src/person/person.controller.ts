@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, UseGuards
 import { PersonService } from "./person.service";
 import { AuthGuard } from "src/login/login.guard";
 import { infoPerson } from "./dto/create-person.dto";
+import { UpdateUserDto } from "./dto/update-person.dto";
 
 @Controller('/person')
 //@UseGuards(AuthGuard)
@@ -27,8 +28,8 @@ export class PersonController{
     }
     
     @Put(':document')
-    async updatePerson(@Param('document',ParseIntPipe) document: number, @Body() person){
-        return await this.personService.updatePerson(document,person);
+    async updatePerson(@Param('document',ParseIntPipe) document: number, @Body() info:UpdateUserDto){
+        return await this.personService.updatePerson(document,info);
     }
 
     @Patch(':document')

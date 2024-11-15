@@ -5,8 +5,9 @@ import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { infoPerson } from './dto/create-person.dto';
 import { SearchPerson } from './dto/search-person.dto';
-import { UpdateUserDto } from 'src/user/dto/update-password-user.dto';
+import { UpdateUserPasswordDto } from 'src/user/dto/update-password-user.dto';
 import { EmailService } from 'src/email/email.service';
+import { UpdateUserDto } from './dto/update-person.dto';
 
 @Injectable()
 export class PersonService {
@@ -71,11 +72,20 @@ export class PersonService {
         return HttpStatus.NOT_ACCEPTABLE,{"success":false}
     }
 
-    updatePerson(document: number, person){
+    async updatePerson(document: number, info:UpdateUserDto){
+        const person = {
+            namePerson:info.namePerson,
+            lastNamePerson:info.lastNamePerson,
+            email:info.email
+        }
+        const user = {
+            typeUser:info.typeUser
+        }
+        this.userService.updateUser((await this.getPerson(document)).user.userName,user)
         return this.personRepository.update({document},person),HttpStatus.ACCEPTED,{"success":true}
     }
 
-    async updateStateUser(document:number,user:UpdateUserDto){
+    async updateStateUser(document:number,user:UpdateUserPasswordDto){
         const doc = await this.getPerson(document)
         return this.userService.updateUser(doc.user.userName,user),HttpStatus.ACCEPTED,{"success":true}
     }
@@ -105,7 +115,7 @@ export class PersonService {
         return "INACTIVO"
     }
 
-    async recoveryPassword(info:UpdateUserDto){
+    async recoveryPassword(info:UpdateUserPasswordDto){
         const user = await this.userService.getUser(info.userName)
         const person = await this.personRepository.findOne({
             where:{

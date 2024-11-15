@@ -7,6 +7,7 @@ import { SendEmail } from './dto/send-email.dto';
 export class EmailService {
 
     async sendEmailRecovery(info:SendEmail){
+        
         await transporter.sendMail({
             from: '"Olvide mi contraseña" <juan.rodriguez99@uptc.edu.co>', // sender address
             to: info.email, // list of receivers

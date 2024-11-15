@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { UpdateUserDto } from './dto/update-password-user.dto';
+import { UpdateUserPasswordDto } from './dto/update-password-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthUser } from './dto/auth-user.dto';
 
@@ -45,7 +45,7 @@ export class UserService {
         return this.userRepository.save(newUser)
     }
 
-    async recoveryPasswordUser(info:UpdateUserDto){
+    async recoveryPasswordUser(info:UpdateUserPasswordDto){
         const password = info.newPassword;
         return this.userRepository.update(info.userName,{password})
     }
@@ -54,7 +54,7 @@ export class UserService {
         return this.userRepository.update({userName},state)
     }
 
-    async updatePassword(info:UpdateUserDto){
+    async updatePassword(info:UpdateUserPasswordDto){
         const userFound = await this.getUser(info.userName);
         const currentPassword = info.currentPassword;
         const password = info.newPassword;
