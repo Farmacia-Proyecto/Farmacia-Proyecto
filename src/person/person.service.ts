@@ -114,7 +114,11 @@ export class PersonService {
         })
         if(person!=null){
             this.emailService.sendEmailRecovery({userName:info.userName,email:person.email})
-            return HttpStatus.ACCEPTED,{"email":person.email,"success":true}
+            const email = person.email
+            return {
+                "email": email ,
+                "success":true
+            }
         }
         return HttpStatus.BAD_REQUEST,{"success":false}
     }
