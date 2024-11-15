@@ -73,14 +73,15 @@ export class UserService {
         return false;
     }
 
-    checkUser(user:AuthUser){
-        return this.userRepository.findOne({
-            where:{
-                userName:user.userName,
-                password:user.password
-            }
-        })
-    }
+    async checkUser(user: AuthUser) {
+        const userFound = await this.userRepository
+          .createQueryBuilder("user")
+          .where("BINARY user.userName = :userName", { userName: user.userName })
+          .andWhere("BINARY user.password = :password", { password: user.password })
+          .getOne();
+      
+        return userFound;
+      }
 
     generarContrasena(): string {
         const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
