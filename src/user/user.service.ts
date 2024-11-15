@@ -17,7 +17,6 @@ export class UserService {
     }
 
     getUser(userName){
-        console.log(userName)
         return this.userRepository.findOne({
             where:{
                 userName:userName
