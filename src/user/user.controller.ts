@@ -29,4 +29,9 @@ export class UserController {
     updateUser(@Body() info:UpdateUserDto){
         return this.userService.updatePassword(info)
     }
+
+    @Patch("/recovery")
+    recoveryPassword(@Body() info:UpdateUserDto){
+        return this.userService.recoveryPasswordUser(info)
+    }
 }

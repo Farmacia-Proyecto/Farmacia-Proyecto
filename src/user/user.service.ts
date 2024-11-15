@@ -10,14 +10,14 @@ import { AuthUser } from './dto/auth-user.dto';
 export class UserService {
 
     constructor(
-        @InjectRepository(User) private userRepository:Repository<User>
-    ){}
+        @InjectRepository(User) private userRepository:Repository<User>){}
 
     getUsers(){
         return this.userRepository.find()
     }
 
     getUser(userName){
+        console.log(userName)
         return this.userRepository.findOne({
             where:{
                 userName:userName
@@ -39,12 +39,16 @@ export class UserService {
         const user:User= {
             "userName": userName,
             "password": this.generarContrasena(),
-            "typeUser": userDto.typeUser.toUpperCase(),
+            "typeUser": userDto.typeUser,
             "state": true
         };
         const newUser = this.userRepository.create(user)
-
         return this.userRepository.save(newUser)
+    }
+
+    async recoveryPasswordUser(info:UpdateUserDto){
+        const password = info.newPassword;
+        return this.userRepository.update(info.userName,{password})
     }
 
     async updateUser(userName: string,state){
@@ -80,7 +84,7 @@ export class UserService {
     }
 
     generarContrasena(): string {
-        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let contrasena = '';
         for (let i = 0; i < 10; i++) {
           const indiceAleatorio = Math.floor(Math.random() * caracteres.length);

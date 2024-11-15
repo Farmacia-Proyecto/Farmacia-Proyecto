@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from "@nestjs/common";
 import { PersonService } from "./person.service";
-import { Person } from "./person.entity";
 import { AuthGuard } from "src/login/login.guard";
 import { infoPerson } from "./dto/create-person.dto";
 
@@ -35,5 +34,10 @@ export class PersonController{
     @Patch(':document')
     async updateUser(@Param('document',ParseIntPipe) document: number, @Body() user){
         return await this.personService.updateStateUser(document,user)
+    }
+
+    @Post("/recover-password")
+    async recovery(@Body() userName){
+        return await this.personService.recoveryPassword(userName)
     }
 }
