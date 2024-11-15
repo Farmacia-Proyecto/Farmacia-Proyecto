@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-password-user.dto';
+import { UpdateUserPasswordDto } from './dto/update-password-user.dto';
 import { AuthGuard } from 'src/login/login.guard';
 
 @Controller('/user')
@@ -26,12 +26,12 @@ export class UserController {
     }
 
     @Put()
-    updateUser(@Body() info:UpdateUserDto){
+    updateUser(@Body() info:UpdateUserPasswordDto){
         return this.userService.updatePassword(info)
     }
 
     @Patch("/recovery")
-    recoveryPassword(@Body() info:UpdateUserDto){
+    recoveryPassword(@Body() info:UpdateUserPasswordDto){
         return this.userService.recoveryPasswordUser(info)
     }
 }
