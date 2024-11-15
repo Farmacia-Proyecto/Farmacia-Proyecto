@@ -76,8 +76,7 @@ export class UserService {
     async checkUser(user: AuthUser) {
         const userFound = await this.userRepository
           .createQueryBuilder("user")
-          .where("BINARY user.userName = :userName", { userName: user.userName })
-          .andWhere("BINARY user.password = :password", { password: user.password })
+          .where("BINARY user.password = :password", { userName: user.userName })
           .getOne();
       
         return userFound;
