@@ -115,7 +115,7 @@ export class PersonService {
         if(person!=null){
             this.emailService.sendEmailRecovery({userName:info.userName,email:person.email})
             const email = person.email
-            return {
+            return HttpStatus.ACCEPTED,{
                 "email": email ,
                 "success":true
             }
