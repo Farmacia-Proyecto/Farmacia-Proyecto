@@ -89,6 +89,7 @@ export class UserService {
           const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
           contrasena += caracteres[indiceAleatorio];
         }
+        
         return contrasena;
     }
 }
