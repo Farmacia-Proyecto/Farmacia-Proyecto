@@ -1,5 +1,7 @@
 import { Person } from "src/person/person.entity";
-import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
+import { ProductsLot } from "src/product/productlot.entity";
+import { PurchaseOrder } from "src/purchaseorder/purchaseorder.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Lot{
@@ -9,6 +11,13 @@ export class Lot{
     @Column()
     registerDate:Date
 
-    @ManyToMany(()=>Person, person=>person.document)
+    @ManyToOne(()=>Person, person=>person.document)
     person:Person
+
+    @OneToMany(()=>ProductsLot,productsLot=>productsLot.lot)
+    productsLot:ProductsLot[]
+
+    @OneToOne(()=>PurchaseOrder)
+    @JoinColumn({name:'codOrder'})
+    purchaseOrder:PurchaseOrder
 }
