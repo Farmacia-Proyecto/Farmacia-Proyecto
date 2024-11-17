@@ -20,4 +20,8 @@ export class ProductService {
         })
     }
 
+    createProduct(){
+        
+    }
+
 }
