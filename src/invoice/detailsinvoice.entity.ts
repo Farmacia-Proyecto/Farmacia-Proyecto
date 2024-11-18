@@ -19,10 +19,10 @@ export class DetailsInvoice{
     @Column()
     iva:number
 
-    @ManyToOne(()=>Invoice,invoice=>invoice.codInvoice,{eager:true})
+    @ManyToOne(()=>Invoice,invoice=>invoice.codInvoice)
     invoice:Invoice
 
-    @ManyToOne(()=>Product,product=>product.codProduct,{eager:true})
+    @ManyToOne(()=>Product,product=>product.codProduct)
     product:Product
 
 }
