@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
+import { CreateProduct, UpdateProduct } from './dto/create-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -20,8 +21,16 @@ export class ProductService {
         })
     }
 
-    createProduct(){
-        
+    createProduct(infoProduct:CreateProduct){
+        const productFound = this.getProduct(infoProduct.codProduct)
+        if(productFound==null){
+            const newProduct = this.productRepository.create(infoProduct)
+            return this.productRepository.save(newProduct),{"success":true}
+        }
+        return HttpStatus.BAD_REQUEST,{"success":true}
     }
 
+    updateProduct(codProduct,infoUpdate:UpdateProduct){
+        return this.productRepository.update(codProduct,infoUpdate)
+    }
 }
