@@ -21,6 +21,13 @@ export class ProductService {
         })
     }
 
+    async searchPoduct(nameProduct){
+        const productSearch = await this.productRepository.createQueryBuilder('Product')
+        .where('nameProduct LIKE :nameProduct',{nameProduct: `%${nameProduct}%`})
+        .getMany();
+        return productSearch;
+    }
+
     createProduct(infoProduct:CreateProduct){
         const productFound = this.getProduct(infoProduct.codProduct)
         if(productFound==null){
