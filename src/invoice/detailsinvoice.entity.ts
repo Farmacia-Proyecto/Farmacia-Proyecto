@@ -1,6 +1,6 @@
 import { Invoice } from "src/invoice/invoice.entity";
 import { Product } from "src/product/product.entity";
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class DetailsInvoice{
@@ -20,9 +20,11 @@ export class DetailsInvoice{
     iva:number
 
     @ManyToOne(()=>Invoice,invoice=>invoice.codInvoice)
+    @JoinColumn({name:"codInvoice"})
     invoice:Invoice
 
     @ManyToOne(()=>Product,product=>product.codProduct)
+    @JoinColumn({name:"codProduct"})
     product:Product
 
 }

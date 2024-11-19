@@ -14,16 +14,16 @@ export class Product{
     @Column({nullable:true})
     describeProduct:string
 
-    @OneToMany(()=>ProductsLot,productLot=>productLot.product,{eager:true})
+    @OneToMany(()=>ProductsLot,productLot=>productLot.product)
     productsLot:ProductsLot[]
 
-    @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.product,{eager:true})
+    @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.product)
     detailsInvoice:DetailsInvoice[]
 
-    @OneToMany(()=>ProductsLaboratory,productsLaboratory=>productsLaboratory.laboratory,{eager:true})
+    @OneToMany(()=>ProductsLaboratory,productsLaboratory=>productsLaboratory.laboratory)
     productsLaboratory:ProductsLaboratory[]
 
-    @OneToMany(()=>OrderDetails,orderDetails=>orderDetails.purchaseOrder,{eager:true})
+    @OneToMany(()=>OrderDetails,orderDetails=>orderDetails.purchaseOrder)
     ordersDetails:OrderDetails[]
     
 }
