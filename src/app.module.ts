@@ -9,9 +9,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './login/constants';
 import { ProductModule } from './product/product.module';
 import { LotModule } from './lot/lot.module';
-import { LotService } from './lot/lot.service';
-import { LotController } from './lot/lot.controller';
 import { EmailModule } from './email/email.module';
+import { LaboratoryModule } from './laboratory/laboratory.module';
 
 @Module({
   imports: [
@@ -30,8 +29,8 @@ import { EmailModule } from './email/email.module';
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule, ProductModule, LotModule, EmailModule],
-  providers: [LoginService, LotService],
-  controllers: [LoginController, LotController],
+    UserModule,PersonModule,LoginModule, ProductModule, LotModule, EmailModule, LaboratoryModule],
+  providers: [LoginService],
+  controllers: [LoginController],
 })
 export class AppModule {}

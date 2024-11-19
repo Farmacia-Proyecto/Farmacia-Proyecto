@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm"
 import { ProductsLot } from "./productlot.entity"
-import { ProductsSupplier } from "src/suppliers/productssupplier.entity"
+import { ProductsLaboratory } from "src/product/productslaboratory.entity"
 import { OrderDetails } from "src/purchaseorder/orderdetails.entity"
 import { DetailsInvoice } from "src/invoice/detailsinvoice.entity"
 
@@ -22,8 +22,8 @@ export class Product{
     @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.product,{eager:true})
     detailsInvoice:DetailsInvoice[]
 
-    @OneToMany(()=>ProductsSupplier,productsSupplier=>productsSupplier.product,{eager:true})
-    products:Product[]
+    @OneToMany(()=>ProductsLaboratory,productsLaboratory=>productsLaboratory.laboratory,{eager:true})
+    productsLaboratory:ProductsLaboratory[]
 
     @OneToMany(()=>OrderDetails,orderDetails=>orderDetails.purchaseOrder,{eager:true})
     ordersDetails:OrderDetails[]

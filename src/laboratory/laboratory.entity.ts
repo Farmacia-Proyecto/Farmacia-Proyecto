@@ -1,19 +1,19 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm"
-import { ProductsSupplier } from "./productssupplier.entity"
+import { ProductsLaboratory } from "../product/productslaboratory.entity"
 import { PurchaseOrder } from "src/purchaseorder/purchaseorder.entity"
 
 @Entity()
-export class Suppliers{
+export class Laboratory{
     @PrimaryColumn()
     nit:number
     @Column()
-    nameCompany:string
+    nameLaboratory:string
     @Column()
-    phone:number
+    phoneLaboratory:number
     @Column()
-    emailCompany:string
-    @OneToMany(()=>ProductsSupplier,productsSupplier=>productsSupplier.supplier)
-    productsSuppliers:ProductsSupplier[]
+    emailLaboratory:string
+    @OneToMany(()=>ProductsLaboratory,productLaboratory=>productLaboratory.laboratory)
+    productsLaboratory:ProductsLaboratory[]
     @OneToMany(()=>PurchaseOrder,purchaseOrder=>purchaseOrder.codOrder)
     purchaseOrder:PurchaseOrder[]
 }

@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
-import { Suppliers } from "./suppliers.entity";
+import { Laboratory } from "../laboratory/laboratory.entity";
 import { Product } from "src/product/product.entity";
 
 @Entity()
-export class ProductsSupplier{
+export class ProductsLaboratory{
 
     @PrimaryColumn()
     nit:number
@@ -13,8 +13,8 @@ export class ProductsSupplier{
     @Column()
     price:number
 
-    @ManyToOne(()=>Suppliers,suppliers=>suppliers.nit)
-    supplier:Suppliers
+    @ManyToOne(()=>Laboratory,laboratory=>laboratory.nit)
+    laboratory:Laboratory
 
     @ManyToOne(()=>Product,product=>product.codProduct)
     product:Product
