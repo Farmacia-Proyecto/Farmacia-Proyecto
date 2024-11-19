@@ -9,12 +9,17 @@ export class LaboratoryController {
 
     @Get()
     getLaboratories(){
-        return this.laboratoryService.getLaboratories
+        return this.laboratoryService.getLaboratories()
     }
 
     @Get(':nit')
     getLaboratory(@Param("nit",ParseIntPipe) nit:number){
         return this.laboratoryService.getLaboratory(nit)
+    }
+
+    @Post("/search")
+    searchLaboratory(@Body() nameLaboratory){
+        return this.laboratoryService.searchLaboratory(nameLaboratory)
     }
 
     @Post()

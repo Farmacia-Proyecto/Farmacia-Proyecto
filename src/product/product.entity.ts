@@ -12,9 +12,7 @@ export class Product{
     @Column()
     nameProduct:string
     @Column({nullable:true})
-    describe:string
-    @Column()
-    unitOfMeasures:string
+    describeProduct:string
 
     @OneToMany(()=>ProductsLot,productLot=>productLot.product,{eager:true})
     productsLot:ProductsLot[]

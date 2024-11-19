@@ -9,12 +9,12 @@ export class ProductService {
 
     constructor(@InjectRepository(Product) private productRepository:Repository<Product>){}
 
-    getProducts(){
-        return this.productRepository.find()
+    async getProducts(){
+        return await this.productRepository.find()
     }
 
-    getProduct(codProduct:number){
-        return this.productRepository.findOne({
+    async getProduct(codProduct:number){
+        return await this.productRepository.findOne({
             where:{
                 codProduct:codProduct
             }
@@ -31,7 +31,12 @@ export class ProductService {
     createProduct(infoProduct:CreateProduct){
         const productFound = this.getProduct(infoProduct.codProduct)
         if(productFound==null){
-            const newProduct = this.productRepository.create(infoProduct)
+            const product = {
+                codProduct:infoProduct.codProduct,
+                nameProduct:infoProduct.describeProduct.toUpperCase(),
+                describeProduct:infoProduct.describeProduct.toUpperCase()
+            }
+            const newProduct = this.productRepository.create(product)
             return this.productRepository.save(newProduct),{"success":true}
         }
         return HttpStatus.BAD_REQUEST,{"success":true}

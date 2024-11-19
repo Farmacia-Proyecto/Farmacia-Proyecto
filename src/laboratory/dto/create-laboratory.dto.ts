@@ -10,3 +10,7 @@ export class UpdateLaboratoryDto{
     phoneLaboratory?:number
     emailLaboratory?:string
 }
+
+export class SearchLaboratory{
+    nameLaboratory:string
+}

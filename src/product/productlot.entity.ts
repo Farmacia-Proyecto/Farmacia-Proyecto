@@ -1,5 +1,5 @@
 import { Lot } from "src/lot/lot.entity";
-import { Column, Entity, ManyToOne, PrimaryColumn} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn} from "typeorm";
 import { Product } from "./product.entity";
 
 @Entity()
@@ -20,8 +20,10 @@ export class ProductsLot{
     availability:boolean
 
     @ManyToOne(()=>Product,product=>product.codProduct)
+    @JoinColumn({name:'codProduct'})
     product:Product
 
     @ManyToOne(()=>Lot,lot=>lot.codLot)
+    @JoinColumn({name:'codLot'})
     lot:Lot
 }

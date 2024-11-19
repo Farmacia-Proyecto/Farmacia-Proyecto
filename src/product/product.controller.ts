@@ -2,13 +2,14 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/c
 import { ProductService } from './product.service';
 import { CreateProduct, UpdateProduct } from './dto/create-product.dto';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
 
     constructor(private productService:ProductService){}
 
     @Get()
     getProducts(){
+        console.log(this.productService.getProducts())
         return this.productService.getProducts()
     }
 
