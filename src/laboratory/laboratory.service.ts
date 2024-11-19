@@ -27,6 +27,20 @@ export class LaboratoryService {
             .getMany(),"success":true};
     }
 
+    async gatNamesLaboratories(){
+        const laboratories = await this.laboratoryRepository.find()
+            let i =0;
+            let info = []
+            while(i<laboratories.length){
+                info[i]= {
+                    "nameLaboratoy":laboratories[i].nameLaboratory
+                }
+                i++
+            }
+            return {"laboratory":info,"success":true}
+    }
+
+
     createLaboratory(infoLaboratory:CreateLaboratoryDto){
         const laboratoryFound = this.getLaboratory(infoLaboratory.nit);
             const newLaboratory = this.laboratoryRepository.create(infoLaboratory);

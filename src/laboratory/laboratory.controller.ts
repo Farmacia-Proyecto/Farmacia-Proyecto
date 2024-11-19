@@ -12,6 +12,12 @@ export class LaboratoryController {
         return this.laboratoryService.getLaboratories()
     }
 
+    @Get("/namesLaboratory")
+    getNamesLaboratories(){
+        return this.laboratoryService.gatNamesLaboratories()
+    }
+
+
     @Get(':nit')
     getLaboratory(@Param("nit",ParseIntPipe) nit:number){
         return this.laboratoryService.getLaboratory(nit)
