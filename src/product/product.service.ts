@@ -109,8 +109,7 @@ export class ProductService {
         const updateProduct = {
             "nameProduct":infoUpdate.nameProduct,
             "describeProduct":infoUpdate.describeProduct,
-            "quantity":infoUpdate.quantity,
-            "price":infoUpdate.price,
+            "price":infoUpdate.priceSell,
             "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory)
         }
         return await this.productRepository.update(codProduct,updateProduct)

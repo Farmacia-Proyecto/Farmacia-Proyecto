@@ -14,8 +14,7 @@ export class UpdateProduct{
     nameProduct:string
     describeProduct:string
     laboratory:string
-    quantity:number
-    price:number
+    priceSell:number
 }
 
 export class infoGetProduct{
