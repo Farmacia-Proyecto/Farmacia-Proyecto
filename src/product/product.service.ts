@@ -42,12 +42,12 @@ export class ProductService {
     async getProduct(infoGetProduct:infoGetProduct){
         const laboratory = await this.laboratoryService.getLaboratory(infoGetProduct.laboratory)
         if(laboratory!=null){
-            return await this.productRepository.findOne({
+            return {"product":await this.productRepository.findOne({
                 where:{
                     nameProduct:infoGetProduct.nameProduct,
                     laboratory:laboratory
                 }
-            })
+            }),"success":true}
         }else{
             return HttpStatus.BAD_REQUEST,{"success":false}
         }
@@ -92,16 +92,19 @@ export class ProductService {
                 return HttpStatus.BAD_REQUEST,{"success":false}
             }
         }else{
-            this.lotService.createLot({"codLot":infoProduct.codLot})
+            await this.lotService.createLot({"codLot":infoProduct.codLot})
+            productFound.product.price = infoProduct.priceSell
+            productFound.product.describeProduct = infoProduct.describeProduct
+            this.productRepository.save(productFound.product)
             const productLot:CreateProductsLot = {
                 "codProduct":infoProduct.codProduct,
                 "codLot": infoProduct.codLot,
                 "expirationDate":infoProduct.expirationDate,
-                "price":infoProduct.priceSell,
+                "price":infoProduct.priceBuy,
                 "quantity":infoProduct.quantity,
                 "availability":true
             }        
-            return this.productLotService.createProductLot(productLot),{"success":true}
+            return await this.productLotService.createProductLot(productLot),{"success":true}
         }
     }
 
@@ -109,8 +112,7 @@ export class ProductService {
         const updateProduct = {
             "nameProduct":infoUpdate.nameProduct,
             "describeProduct":infoUpdate.describeProduct,
-            "quantity":infoUpdate.quantity,
-            "price":infoUpdate.price,
+            "price":infoUpdate.priceSell,
             "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory)
         }
         return await this.productRepository.update(codProduct,updateProduct)

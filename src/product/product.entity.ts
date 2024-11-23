@@ -11,7 +11,7 @@ export class Product{
     codProduct:number
     @Column()
     nameProduct:string
-    @Column({nullable:true})
+    @Column()
     describeProduct:string
     @Column()
     price:number
