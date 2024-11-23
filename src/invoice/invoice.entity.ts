@@ -19,4 +19,6 @@ export class Invoice{
     person:Person
     @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.invoice)
     detailsInvoice:DetailsInvoice[]
+
+    
 }

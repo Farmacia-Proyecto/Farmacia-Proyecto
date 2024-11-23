@@ -1,5 +1,5 @@
 import { Person } from "src/person/person.entity";
-import { ProductsLot } from "src/product/productlot.entity";
+import { ProductsLot } from "src/productsLot/productlot.entity";
 import { PurchaseOrder } from "src/purchaseorder/purchaseorder.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 
@@ -12,6 +12,7 @@ export class Lot{
     registerDate:Date
 
     @ManyToOne(()=>Person, person=>person.document)
+    @JoinColumn({name:"documentPerson"})
     person:Person
 
     @OneToMany(()=>ProductsLot,productsLot=>productsLot.lot)

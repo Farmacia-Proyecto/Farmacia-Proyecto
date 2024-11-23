@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('batch')
+@Controller('lot')
 export class LotController {}

@@ -3,10 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Lot } from './lot.entity';
 import { LotService } from './lot.service';
 import { LotController } from './lot.controller';
+import { PurchaseorderModule } from 'src/purchaseorder/purchaseorder.module';
+import { PersonModule } from 'src/person/person.module';
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Lot])],
+    imports:[TypeOrmModule.forFeature([Lot]),PurchaseorderModule, PersonModule],
     providers: [LotService],
-    controllers: [LotController]
+    controllers: [LotController],
+    exports:[LotService]
   })
 export class LotModule {}

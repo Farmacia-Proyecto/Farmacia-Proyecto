@@ -1,9 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm"
-import { ProductsLaboratory } from "../product/productslaboratory.entity"
+import { ProductsLaboratory } from "../productsLaboratory/productlaboratory.entity"
 import { PurchaseOrder } from "src/purchaseorder/purchaseorder.entity"
 
 @Entity()
 export class Laboratory{
+    
     @PrimaryColumn()
     nit:number
     @Column()

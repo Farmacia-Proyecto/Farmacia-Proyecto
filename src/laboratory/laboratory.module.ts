@@ -7,6 +7,7 @@ import { Laboratory } from './laboratory.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Laboratory])],
   providers: [LaboratoryService],
-  controllers: [LaboratoryController]
+  controllers: [LaboratoryController],
+  exports:[LaboratoryService]
 })
 export class LaboratoryModule {}

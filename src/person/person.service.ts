@@ -52,14 +52,23 @@ export class PersonService {
         }
     }
 
+    async searchPersonByUserName(userName){
+            const persons = await this.personRepository.findOne({
+                where:{
+                    user: await this.userService.getUser(userName)
+                }
+            })
+            return persons
+    }
+
     async createPerson(infoPerson: infoPerson){
         const personFound = await this.getPerson(infoPerson.document)
         if(personFound==null){
             const person = {
                 "typeDocument":infoPerson.typeDocument.toUpperCase(),
                 "document":infoPerson.document,
-                "namePerson":infoPerson.namePerson.toUpperCase(),
-                "lastNamePerson":infoPerson.lastNamePerson.toUpperCase(),
+                "namePerson":this.formatNames(infoPerson.namePerson),
+                "lastNamePerson":this.formatNames(infoPerson.lastNamePerson),
                 "phone":infoPerson.phone,
                 "email":infoPerson.email
             }
@@ -70,6 +79,19 @@ export class PersonService {
             return await this.personRepository.save(newPerson),HttpStatus.CREATED,{"success":true}
         }
         return HttpStatus.NOT_ACCEPTABLE,{"success":false}
+    }
+
+    formatNames(string:string){
+        let tmp = string.split(" ");
+        let out = "";
+        for(let i=0;i<tmp.length;i++){
+            tmp[i] = tmp[i].toLowerCase()
+            tmp[i] = tmp[i].charAt(0).toUpperCase() + tmp[i].slice(1)
+            console.log(tmp[i])
+            out += tmp[i]+" ";
+        }
+        console.log(out)
+        return out;
     }
 
     async updatePerson(document: number, info:UpdateUserDto){

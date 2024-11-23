@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/c
 import { LaboratoryService } from './laboratory.service';
 import { CreateLaboratoryDto, UpdateLaboratoryDto } from './dto/create-laboratory.dto';
 
-@Controller('laboratory')
+@Controller('/laboratory')
 export class LaboratoryController {
 
     constructor(private laboratoryService:LaboratoryService){}
@@ -13,8 +13,8 @@ export class LaboratoryController {
     }
 
     @Get("/namesLaboratory")
-    getNamesLaboratories(){
-        return this.laboratoryService.gatNamesLaboratories()
+    async getNamesLaboratories(){
+        return await this.laboratoryService.gatNamesLaboratories()
     }
 
 

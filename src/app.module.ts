@@ -11,6 +11,9 @@ import { ProductModule } from './product/product.module';
 import { LotModule } from './lot/lot.module';
 import { EmailModule } from './email/email.module';
 import { LaboratoryModule } from './laboratory/laboratory.module';
+import { PurchaseorderModule } from './purchaseorder/purchaseorder.module';
+import { ProductslotModule } from './productsLot/productslot.module';
+import { ProductslaboratoryModule } from './productslaboratory/productslaboratory.module';
 
 @Module({
   imports: [
@@ -29,7 +32,8 @@ import { LaboratoryModule } from './laboratory/laboratory.module';
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule, ProductModule, LotModule, EmailModule, LaboratoryModule],
+    UserModule,PersonModule,LoginModule, ProductslotModule,ProductModule, 
+    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule,ProductslaboratoryModule],
   providers: [LoginService],
   controllers: [LoginController],
 })

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Laboratory } from './laboratory.entity';
 import { Repository } from 'typeorm';
@@ -13,8 +13,8 @@ export class LaboratoryService {
         return {"laboratory": await this.laboratoryRepository.find(),"success":true}
     }
 
-    getLaboratory(nameLaboratory){
-        return this.laboratoryRepository.findOne({
+    async getLaboratory(nameLaboratory){
+        return await this.laboratoryRepository.findOne({
             where:{
                 nameLaboratory: nameLaboratory
             }
@@ -33,7 +33,7 @@ export class LaboratoryService {
             let info = []
             while(i<laboratories.length){
                 info[i]= {
-                    "nameLaboratoy":laboratories[i].nameLaboratory
+                    "nameLaboratory":laboratories[i].nameLaboratory
                 }
                 i++
             }
@@ -41,10 +41,13 @@ export class LaboratoryService {
     }
 
 
-    createLaboratory(infoLaboratory:CreateLaboratoryDto){
-        const laboratoryFound = this.getLaboratory(infoLaboratory.nit);
+    async createLaboratory(infoLaboratory:CreateLaboratoryDto){
+        const laboratoryFound = await this.getLaboratory(infoLaboratory.nameLaboratory);
+        if(!laboratoryFound){
             const newLaboratory = this.laboratoryRepository.create(infoLaboratory);
-            return this.laboratoryRepository.save(newLaboratory),{"success":true};
+            return await this.laboratoryRepository.save(newLaboratory),{"success":true};   
+        }
+        return HttpStatus.BAD_REQUEST,{"success":false}
     }
 
     async updateLaboratory(nit,infoLaboratory:UpdateLaboratoryDto){

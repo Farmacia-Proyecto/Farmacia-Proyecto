@@ -1,11 +1,15 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProduct, UpdateProduct } from './dto/create-product.dto';
+import { AuthGuard } from 'src/login/login.guard';
 
 @Controller('products')
+@UseGuards(AuthGuard)
 export class ProductController {
 
     constructor(private productService:ProductService){}
+
+    
 
     @Get()
     getProducts(){
