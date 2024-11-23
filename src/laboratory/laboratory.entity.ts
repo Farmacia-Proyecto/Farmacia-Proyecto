@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm"
-import { ProductsLaboratory } from "../productsLaboratory/productlaboratory.entity"
 import { PurchaseOrder } from "src/purchaseorder/purchaseorder.entity"
+import { Product } from "src/product/product.entity"
 
 @Entity()
 export class Laboratory{
@@ -13,8 +13,8 @@ export class Laboratory{
     phoneLaboratory:number
     @Column()
     emailLaboratory:string
-    @OneToMany(()=>ProductsLaboratory,productLaboratory=>productLaboratory.laboratory)
-    productsLaboratory:ProductsLaboratory[]
+    @OneToMany(()=>Product,product=>product.codProduct)
+    products:Product[]
     @OneToMany(()=>PurchaseOrder,purchaseOrder=>purchaseOrder.codOrder)
     purchaseOrder:PurchaseOrder[]
 }

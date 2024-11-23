@@ -2,12 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { CreateProduct, UpdateProduct } from './dto/create-product.dto';
+import { CreateProduct, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
 import { LotService } from 'src/lot/lot.service';
 import { ProductslotService } from '../productsLot/productslot.service';
 import { CreateProductsLot } from '../productsLot/dto/create-productslot.dto';
-import { ProductslaboratoryService } from 'src/productslaboratory/productslaboratory.service';
-import { createProductLaboratory } from 'src/productsLaboratory/dto/productLaboratory.dto';
+import { LaboratoryService } from 'src/laboratory/laboratory.service';
 
 @Injectable()
 export class ProductService {
@@ -15,40 +14,66 @@ export class ProductService {
     constructor(@InjectRepository(Product) private productRepository:Repository<Product>,
     private lotService:LotService,
     private productLotService:ProductslotService,
-    private productsLaboratoryService:ProductslaboratoryService,
+    private laboratoryService:LaboratoryService
     ){}
 
     async getProducts(){
-        return await this.productRepository.find()
-    }
-
-    async getProduct(codProduct:number){
-        return await this.productRepository.findOne({
-            where:{
-                codProduct:codProduct
+        const products = await this.productRepository.find();
+        const info =[];
+        for(let i =0; i<products.length;i++){
+            let productLot = await this.productLotService.getProductLotsForCod(products[i].codProduct)
+            let totalQuantity = 0;
+            for(let j=0;j<productLot.length;j++){
+                totalQuantity += productLot[j].quantity
             }
-        })
+            let laboratory = await this.laboratoryService.getLaboratory(products[i].laboratory)
+            info[i] = {
+                codProduct:products[i].codProduct,
+                nameProduct:products[i].nameProduct,
+                describeProduct:products[i].describeProduct,
+                quantity:totalQuantity,
+                priceSell:products[i].price,
+                laboratory: laboratory.nameLaboratory
+            }
+        }
+        return {"products":info,"success":true}
     }
 
-    async searchPoduct(nameProduct){
+    async getProduct(infoGetProduct:infoGetProduct){
+        const laboratory = await this.laboratoryService.getLaboratory(infoGetProduct.laboratory)
+        if(laboratory!=null){
+            return await this.productRepository.findOne({
+                where:{
+                    nameProduct:infoGetProduct.nameProduct,
+                    laboratory:laboratory
+                }
+            })
+        }else{
+            return HttpStatus.BAD_REQUEST,{"success":false}
+        }
+    }
+
+    async searchPoduct(nameProduct:SearchProduct){
         const productSearch = await this.productRepository.createQueryBuilder('Product')
-        .where('nameProduct LIKE :nameProduct',{nameProduct: `%${nameProduct}%`})
+        .where('nameProduct LIKE :nameProduct',{nameProduct:`%${nameProduct.nameProduct}%`})
         .getMany();
         return productSearch;
     }
 
     async createProduct(infoProduct:CreateProduct){
-        const productFound = await this.getProduct(infoProduct.codProduct)
-        console.log("Informacion que llega al metodo createProduct")
-        console.log(infoProduct)
+        const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
+            "laboratory":infoProduct.laboratory})
         if(productFound==null){
             if(infoProduct.quantity>0){
+                const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
                 const product = {
                     codProduct:infoProduct.codProduct,
                     nameProduct: this.formatNames(infoProduct.nameProduct),
-                    describeProduct:infoProduct.describeProduct
+                    describeProduct:infoProduct.describeProduct,
+                    price:infoProduct.priceSell,
+                    laboratory: laboratory,
                 }
-                console.log("Producto")
+                console.log("Informacion para producto")
                 console.log(product)
                 const newProduct = this.productRepository.create(product)
                 await this.productRepository.save(newProduct)
@@ -57,21 +82,14 @@ export class ProductService {
                     "codProduct":infoProduct.codProduct,
                     "codLot": infoProduct.codLot,
                     "expirationDate":infoProduct.expirationDate,
-                    "price":infoProduct.priceSell,
+                    "price":infoProduct.priceBuy,
                     "quantity":infoProduct.quantity,
                     "availability":true
                 }
                 
-                const productLaboratory:createProductLaboratory = {
-                    "codProduct":infoProduct.codProduct,
-                    "nameLaboratory":infoProduct.laboratory,
-                    "price":infoProduct.priceBuy
-                }
-                console.log("PoductoLab")
-                console.log(productLaboratory)
-                await this.productsLaboratoryService.createProductLaboratory(productLaboratory)
-                
                 return await this.productLotService.createProductLot(productLot),{"success":true}      
+            }else{
+                return HttpStatus.BAD_REQUEST,{"success":false}
             }
         }else{
             this.lotService.createLot({"codLot":infoProduct.codLot})
@@ -85,11 +103,17 @@ export class ProductService {
             }        
             return this.productLotService.createProductLot(productLot),{"success":true}
         }
-        return HttpStatus.BAD_REQUEST,{"success":false}
     }
 
-    updateProduct(codProduct,infoUpdate:UpdateProduct){
-        return this.productRepository.update(codProduct,infoUpdate)
+    async updateProduct(codProduct,infoUpdate:UpdateProduct){
+        const updateProduct = {
+            "nameProduct":infoUpdate.nameProduct,
+            "describeProduct":infoUpdate.describeProduct,
+            "quantity":infoUpdate.quantity,
+            "price":infoUpdate.price,
+            "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory)
+        }
+        return await this.productRepository.update(codProduct,updateProduct)
     }
 
     formatNames(string:string){
@@ -98,10 +122,8 @@ export class ProductService {
         for(let i=0;i<tmp.length;i++){
             tmp[i] = tmp[i].toLowerCase()
             tmp[i] = tmp[i].charAt(0).toUpperCase() + tmp[i].slice(1)
-            console.log(tmp[i])
             out += tmp[i]+" ";
         }
-        console.log(out)
         return out;
     }
 }

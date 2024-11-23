@@ -13,7 +13,6 @@ import { EmailModule } from './email/email.module';
 import { LaboratoryModule } from './laboratory/laboratory.module';
 import { PurchaseorderModule } from './purchaseorder/purchaseorder.module';
 import { ProductslotModule } from './productsLot/productslot.module';
-import { ProductslaboratoryModule } from './productslaboratory/productslaboratory.module';
 
 @Module({
   imports: [
@@ -33,7 +32,7 @@ import { ProductslaboratoryModule } from './productslaboratory/productslaborator
       signOptions: {expiresIn:"8h"}
     }),
     UserModule,PersonModule,LoginModule, ProductslotModule,ProductModule, 
-    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule,ProductslaboratoryModule],
+    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule],
   providers: [LoginService],
   controllers: [LoginController],
 })

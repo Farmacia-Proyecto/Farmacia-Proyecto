@@ -87,7 +87,6 @@ export class PersonService {
         for(let i=0;i<tmp.length;i++){
             tmp[i] = tmp[i].toLowerCase()
             tmp[i] = tmp[i].charAt(0).toUpperCase() + tmp[i].slice(1)
-            console.log(tmp[i])
             out += tmp[i]+" ";
         }
         console.log(out)

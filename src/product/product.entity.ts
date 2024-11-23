@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm"
 import { ProductsLot } from "../productsLot/productlot.entity"
-import { ProductsLaboratory } from "src/productsLaboratory/productlaboratory.entity"
 import { OrderDetails } from "src/purchaseorder/orderdetails.entity"
 import { DetailsInvoice } from "src/invoice/detailsinvoice.entity"
+import { Laboratory } from "src/laboratory/laboratory.entity"
 
 @Entity()
 export class Product{
@@ -13,6 +13,8 @@ export class Product{
     nameProduct:string
     @Column({nullable:true})
     describeProduct:string
+    @Column()
+    price:number
 
     @OneToMany(()=>ProductsLot,productLot=>productLot.product)
     productsLot:ProductsLot[]
@@ -20,8 +22,9 @@ export class Product{
     @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.product)
     detailsInvoice:DetailsInvoice[]
 
-    @OneToMany(()=>ProductsLaboratory,productsLaboratory=>productsLaboratory.product)
-    productsLaboratory:ProductsLaboratory[]
+    @ManyToOne(()=>Laboratory,laboratory=>laboratory.nit)
+    @JoinColumn({name:"nit"})
+    laboratory:Laboratory
 
     @OneToMany(()=>OrderDetails,orderDetails=>orderDetails.purchaseOrder)
     ordersDetails:OrderDetails[]

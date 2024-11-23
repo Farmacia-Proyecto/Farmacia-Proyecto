@@ -9,6 +9,26 @@ export class ProductslotService {
 
     constructor(@InjectRepository(ProductsLot) private productsLotRepository:Repository<ProductsLot>){}
 
+    async getProductsLot(){
+        return await this.productsLotRepository.find()
+    }
+
+    async getProductLotsForName(nameProduct){
+        return await this.productsLotRepository.find({
+            where:{
+                product:{
+                    nameProduct:nameProduct
+                }
+            }
+        })
+    }
+
+    async getProductLotsForCod(codProduct){
+        return await this.productsLotRepository.findBy({
+            codProduct:codProduct
+        })
+    }
+
     async createProductLot(infoProductLot:CreateProductsLot){
         if(infoProductLot.quantity>0){
             const productLot = this.productsLotRepository.create(infoProductLot)

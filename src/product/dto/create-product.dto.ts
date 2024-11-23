@@ -11,6 +11,18 @@ export class CreateProduct{
 }
 
 export class UpdateProduct{
-    nameProduct?:string
-    describe?:string
+    nameProduct:string
+    describeProduct:string
+    laboratory:string
+    quantity:number
+    price:number
+}
+
+export class infoGetProduct{
+    nameProduct:string
+    laboratory:string
+}
+
+export class SearchProduct{
+    nameProduct:string
 }

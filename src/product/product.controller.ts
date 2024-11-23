@@ -13,13 +13,7 @@ export class ProductController {
 
     @Get()
     getProducts(){
-        console.log(this.productService.getProducts())
         return this.productService.getProducts()
-    }
-
-    @Get(':codProduct')
-    getProduct(@Param('codProduct',ParseIntPipe) codProduct:number){
-        return this.productService.getProduct(codProduct)
     }
 
     @Post('/search')
