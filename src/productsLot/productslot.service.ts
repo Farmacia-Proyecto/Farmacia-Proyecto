@@ -29,6 +29,15 @@ export class ProductslotService {
         })
     }
 
+    async getProductLotsForCodLotAndProduct(codProduct,codLot){
+        return await this.productsLotRepository.findOne({
+            where:{
+                codLot:codLot,
+                codProduct:codProduct
+            }
+        })
+    }
+
     async createProductLot(infoProductLot:CreateProductsLot){
         if(infoProductLot.quantity>0){
             const productLot = this.productsLotRepository.create(infoProductLot)
