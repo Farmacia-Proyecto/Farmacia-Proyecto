@@ -63,7 +63,7 @@ export class ProductService {
     async searchPoduct(nameProduct:SearchProduct){
         const productSearch = await this.productRepository
         .createQueryBuilder('product')
-        .leftJoinAndSelect('product.laboratory', 'laboratory') // Incluir la información del laboratorio
+        .leftJoinAndSelect('product.laboratory', 'laboratory') 
         .where('product.nameProduct LIKE :nameProduct', { nameProduct: `%${nameProduct.nameProduct}%` })
         .getMany();
         return this.formatSearchProduct(productSearch);

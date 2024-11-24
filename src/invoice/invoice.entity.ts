@@ -1,11 +1,11 @@
 import { DetailsInvoice } from "src/detailsinvoice/detailsinvoice.entity";
 import { Person } from "src/person/person.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn} from "typeorm";
 
 @Entity()
 export class Invoice{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     codInvoice:number
     @Column()
     date:Date
@@ -15,7 +15,12 @@ export class Invoice{
     typePayment:string
     @Column()
     totalPay:number
-    @ManyToOne(()=> Person, person=>person.document)
+    @Column()
+    subTotal:number
+    @Column()
+    iva:number
+    @ManyToOne(()=> Person, person=>person.document,{eager:true})
+    @JoinColumn({name:"documentPerson"})
     person:Person
     @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.invoice)
     detailsInvoice:DetailsInvoice[]

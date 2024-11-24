@@ -1,7 +1,7 @@
 import { CreateDetailsInvoice } from "src/detailsinvoice/dto/detailsInvoice.dto";
 
 export class CreateInvoice{
-    "dateInvoice":Date
+    "dateInvoice": Date
     "documentClient":number
     "typePay":string
     "subTotal":number

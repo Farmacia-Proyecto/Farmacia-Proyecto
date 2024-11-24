@@ -16,9 +16,6 @@ export class DetailsInvoice{
     @Column()
     price:number
 
-    @Column()
-    iva:number
-
     @ManyToOne(()=>Invoice,invoice=>invoice.codInvoice)
     @JoinColumn({name:"codInvoice"})
     invoice:Invoice
