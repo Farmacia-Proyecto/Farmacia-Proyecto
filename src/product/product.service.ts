@@ -96,12 +96,11 @@ export class ProductService {
         if(productFound.product==null){
             if(infoProduct.quantity>0){
                 const checkProduct = await this.getProductForCod(infoProduct.codProduct)
-                console.log(checkProduct)
                 if(checkProduct==null){
                     const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
                     const product = {
                         codProduct:infoProduct.codProduct,
-                        nameProduct: this.formatNames(infoProduct.nameProduct),
+                        nameProduct: this.formatNames(infoProduct.nameProduct).trim(),
                         describeProduct:infoProduct.describeProduct,
                         price:infoProduct.priceSell,
                         laboratory: laboratory,
