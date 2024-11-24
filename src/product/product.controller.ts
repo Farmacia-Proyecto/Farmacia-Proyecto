@@ -12,7 +12,8 @@ export class ProductController {
     
 
     @Get()
-    getProducts(){
+    async getProducts(){
+        console.log(await this.productService.getProducts())
         return this.productService.getProducts()
     }
 

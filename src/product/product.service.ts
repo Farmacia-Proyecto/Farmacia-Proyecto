@@ -61,9 +61,10 @@ export class ProductService {
     }
 
     async createProduct(infoProduct:CreateProduct){
+
         const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
             "laboratory":infoProduct.laboratory})
-        if(productFound==null){
+        if(productFound.product==null){
             if(infoProduct.quantity>0){
                 const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
                 const product = {
@@ -73,8 +74,6 @@ export class ProductService {
                     price:infoProduct.priceSell,
                     laboratory: laboratory,
                 }
-                console.log("Informacion para producto")
-                console.log(product)
                 const newProduct = this.productRepository.create(product)
                 await this.productRepository.save(newProduct)
                 await this.lotService.createLot({"codLot":infoProduct.codLot})
