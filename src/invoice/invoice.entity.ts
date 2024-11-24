@@ -1,4 +1,4 @@
-import { DetailsInvoice } from "src/invoice/detailsinvoice.entity";
+import { DetailsInvoice } from "src/detailsinvoice/detailsinvoice.entity";
 import { Person } from "src/person/person.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm"
 import { ProductsLot } from "../productsLot/productlot.entity"
 import { OrderDetails } from "src/purchaseorder/orderdetails.entity"
-import { DetailsInvoice } from "src/invoice/detailsinvoice.entity"
+import { DetailsInvoice } from "src/detailsinvoice/detailsinvoice.entity"
 import { Laboratory } from "src/laboratory/laboratory.entity"
 
 @Entity()
@@ -22,7 +22,7 @@ export class Product{
     @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.product)
     detailsInvoice:DetailsInvoice[]
 
-    @ManyToOne(()=>Laboratory,laboratory=>laboratory.nit)
+    @ManyToOne(()=>Laboratory,laboratory=>laboratory.nit,{eager:true})
     @JoinColumn({name:"nit"})
     laboratory:Laboratory
 

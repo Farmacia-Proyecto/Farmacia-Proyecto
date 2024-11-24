@@ -18,7 +18,7 @@ export class ProductController {
     }
 
     @Post('/search')
-    searchProduct(@Body() nameProduct){
+    async searchProduct(@Body() nameProduct){
         return this.productService.searchPoduct(nameProduct)
     }
 
