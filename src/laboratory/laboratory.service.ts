@@ -48,18 +48,6 @@ export class LaboratoryService {
             return {"laboratory":info,"success":true}
     }
 
-    async searchNamesLaboratorySuppliers(nit,data){
-        const laboratories = []
-        for(let i=0;i<data.length;i++){
-            if(nit==data[i].nit){
-                laboratories [i] = {
-                    "nameLaboratory": this.getLaboratoryForCod(data[i].codLaboratory)
-                }
-            }
-        }
-        return laboratories
-    }
-
 
     async createLaboratory(nameLaboratory){
         const laboratoryFound = await this.getLaboratory(nameLaboratory);

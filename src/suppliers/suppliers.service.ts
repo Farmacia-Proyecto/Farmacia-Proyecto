@@ -18,16 +18,28 @@ export class SuppliersService {
     async getSupliers(){
         const providersList = await this.supplierRepository.find()
         const info = []
-        for(let i =0;i<providersList.length;i++)
+        for(let i =0;i<providersList.length;i++){
+            
             info[i] = {
                 "nit":providersList[i].nit,
                 "nameSupplier": providersList[i].nameSupplier,
                 "phoneSupplier": providersList[i].phoneSupplier,
                 "emailSupplier": providersList[i].emailSupplier,
-                "laboratories": await this.laboratoryService.searchNamesLaboratorySuppliers(providersList[i].nit,
-                    this.laboratorySuppliersService.getLaboratorySupplier())
+                "laboratories": await this.formatNamesLaboratories(providersList[i].nit)
             }
+        }
         return {"providers": info ,"success":true}
+    }
+
+    async formatNamesLaboratories(nit){
+        const laboratories = await this.laboratorySuppliersService.getLaboratorySupplierForNit(nit)
+        const names = []
+        for(let i =0;i<laboratories.length;i++){
+            names[i] = {
+                "nameLaboratory":laboratories[i].laboratory.nameLaboratory
+            }
+        }
+        return names;
     }
 
     async createSupplier(infoSupplier:CreateSupplierDto){

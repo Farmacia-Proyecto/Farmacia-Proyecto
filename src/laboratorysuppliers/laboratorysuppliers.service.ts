@@ -13,6 +13,13 @@ export class LaboratorysuppliersService {
         return this.laboratorySupplierRepository.find()
     }
 
+    async getLaboratorySupplierForNit(nit){
+        const laboratorySuppliers = await this.laboratorySupplierRepository.find({
+            where: { nit },
+            relations: ['laboratory'],
+        });
+        return laboratorySuppliers
+    }
 
     addLaboratorySupplier(infoLaboratorySupplier:AddLaboratorySupplier){
         console.log("Agregando a la entidad debil")

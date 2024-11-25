@@ -14,8 +14,8 @@ export class Supplier {
     emailSupplier:string
 
     @OneToMany(()=>LaboratorySuppliers,laboratorySuppliers=>laboratorySuppliers.supplier)
-    laboratories:LaboratorySuppliers[]
+    laboratorySuppliers:LaboratorySuppliers[]
 
     @OneToMany(()=>ProductsSupplier,productsSupplier=>productsSupplier.supplier)
-    products:ProductsSupplier[]
+    productsSupplier:ProductsSupplier[]
 }
