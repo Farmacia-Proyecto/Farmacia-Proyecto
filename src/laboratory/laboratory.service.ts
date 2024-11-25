@@ -21,6 +21,14 @@ export class LaboratoryService {
         })
     }
 
+    async getLaboratoryForCod(codLaboratory){
+        return await this.laboratoryRepository.findOne({
+            where:{
+                codLaboratory: codLaboratory
+            }
+        })
+    }
+
     async searchLaboratory(nameLaboratory:SearchLaboratory){
         return {"laboratory":await this.laboratoryRepository.createQueryBuilder('laboratory')
             .where('laboratory.nameLaboratory LIKE :nameLaboratory', { nameLaboratory: `%${nameLaboratory.nameLaboratory}%` })
@@ -40,11 +48,23 @@ export class LaboratoryService {
             return {"laboratory":info,"success":true}
     }
 
+    async searchNamesLaboratorySuppliers(nit,data){
+        const laboratories = []
+        for(let i=0;i<data.length;i++){
+            if(nit==data[i].nit){
+                laboratories [i] = {
+                    "nameLaboratory": this.getLaboratoryForCod(data[i].codLaboratory)
+                }
+            }
+        }
+        return laboratories
+    }
 
-    async createLaboratory(infoLaboratory:CreateLaboratoryDto){
-        const laboratoryFound = await this.getLaboratory(infoLaboratory.nameLaboratory);
+
+    async createLaboratory(nameLaboratory){
+        const laboratoryFound = await this.getLaboratory(nameLaboratory);
         if(!laboratoryFound){
-            const newLaboratory = this.laboratoryRepository.create(infoLaboratory);
+            const newLaboratory = this.laboratoryRepository.create({"codLaboratory": await this.generatedCodLaboratory(),"nameLaboratory":nameLaboratory});
             return await this.laboratoryRepository.save(newLaboratory),{"success":true};   
         }
         return HttpStatus.BAD_REQUEST,{"success":false}
@@ -52,6 +72,12 @@ export class LaboratoryService {
 
     async updateLaboratory(nit,infoLaboratory:UpdateLaboratoryDto){
         return await this.laboratoryRepository.update(nit,infoLaboratory),{"success":true}
+    }
+
+    
+    async generatedCodLaboratory(){
+        const size = (await this.getLaboratories()).laboratory
+        return  size.length + 1
     }
 
     

@@ -3,6 +3,7 @@ import { ProductsLot } from "../productsLot/productlot.entity"
 import { OrderDetails } from "src/purchaseorder/orderdetails.entity"
 import { DetailsInvoice } from "src/detailsinvoice/detailsinvoice.entity"
 import { Laboratory } from "src/laboratory/laboratory.entity"
+import { ProductsSupplier } from "src/productssupplier/productssupplier.entity"
 
 @Entity()
 export class Product{
@@ -22,10 +23,13 @@ export class Product{
     @OneToMany(()=>DetailsInvoice,detailsInvoice=>detailsInvoice.product)
     detailsInvoice:DetailsInvoice[]
 
-    @ManyToOne(()=>Laboratory,laboratory=>laboratory.nit,{eager:true})
-    @JoinColumn({name:"nit"})
+    @ManyToOne(()=>Laboratory,laboratory=>laboratory.codLaboratory,{eager:true})
+    @JoinColumn({name:"codLaboratory"})
     laboratory:Laboratory
 
     @OneToMany(()=>OrderDetails,orderDetails=>orderDetails.purchaseOrder)
     ordersDetails:OrderDetails[]
+
+    @OneToMany(()=>ProductsSupplier,productsSupplier=>productsSupplier.product)
+    productsSupplier:ProductsSupplier[]
 }

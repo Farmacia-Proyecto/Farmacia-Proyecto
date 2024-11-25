@@ -13,11 +13,11 @@ import { EmailModule } from './email/email.module';
 import { LaboratoryModule } from './laboratory/laboratory.module';
 import { PurchaseorderModule } from './purchaseorder/purchaseorder.module';
 import { ProductslotModule } from './productsLot/productslot.module';
-import { InvoiceController } from './invoice/invoice.controller';
-import { InvoiceService } from './invoice/invoice.service';
 import { InvoiceModule } from './invoice/invoice.module';
-import { DetailsinvoiceService } from './detailsinvoice/detailsinvoice.service';
 import { DetailsinvoiceModule } from './detailsinvoice/detailsinvoice.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { ProductssupplierModule } from './productssupplier/productssupplier.module';
+import { LaboratorysuppliersModule } from './laboratorysuppliers/laboratorysuppliers.module';
 
 @Module({
   imports: [
@@ -37,7 +37,9 @@ import { DetailsinvoiceModule } from './detailsinvoice/detailsinvoice.module';
       signOptions: {expiresIn:"8h"}
     }),
     UserModule,PersonModule,LoginModule, ProductslotModule,ProductModule, 
-    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule, InvoiceModule, DetailsinvoiceModule],
+    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule, InvoiceModule,
+    DetailsinvoiceModule, SuppliersModule, ProductssupplierModule, ProductssupplierModule,
+    LaboratorysuppliersModule],
   providers: [LoginService],
   controllers: [LoginController],
 })
