@@ -80,22 +80,31 @@ export class SuppliersService {
     }
 
     async updateLaboratoriesPartners(nit,laboratories:CreateLaboratoryDto[]){
-        this.laboratorySuppliersService.deleteLaboratorySupplier(nit)
-        await this.addLaboratories(nit,laboratories)
+        await this.laboratorySuppliersService.deleteLaboratorySupplier(nit)
+        this.addLaboratories(nit,laboratories)
     }
 
 
     async addLaboratories(nit,laboratories:CreateLaboratoryDto[]){
+        console.log("Laboratorios que llegaron")
+        console.log(laboratories)
+        console.log()
         for(let i=0;i<laboratories.length;i++){
             const laboratoryFound = await this.laboratoryService.getLaboratory(laboratories[i].nameLaboratory)
+            console.log("Laboratorio buscado")
             console.log(laboratoryFound)
+            console.log()
             if(laboratoryFound==null){
                 console.log("Agregando un nuevo laboratorio")
-                console.log(await this.laboratoryService.createLaboratory(laboratories[i].nameLaboratory))
-                this.laboratoryService.createLaboratory(laboratories[i].nameLaboratory)
+                console.log()
+                await this.laboratoryService.createLaboratory(laboratories[i].nameLaboratory)
                 const laboratory = await this.laboratoryService.getLaboratory(laboratories[i].nameLaboratory)
+                console.log(laboratory)
                 this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratory.codLaboratory,"nit":nit})
             }else{
+                console.log("Laboratorio que se estan agregando al proveedor" + "  i: " + i)
+                console.log(laboratories[i])
+                console.log()
                 this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratoryFound.codLaboratory,"nit":nit})
             }
         }
