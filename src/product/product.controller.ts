@@ -13,8 +13,14 @@ export class ProductController {
 
     @Get()
     async getProducts(){
-        console.log(await this.productService.getProducts())
         return this.productService.getProducts()
+    }
+
+    @Get("/change-laboratories/:nameSupplier")
+    async getNamesLaboratories(@Param('nameSupplier') nameSupplier){
+        console.log("Username")
+        console.log(await this.productService.getNamesLaboratories(nameSupplier))
+        return this.productService.getNamesLaboratories(nameSupplier)
     }
 
     @Post('/search')

@@ -1,13 +1,14 @@
 export class CreateProduct{
     codProduct:number
     nameProduct:string
-    describeProduct?:string
-    expirationDate?:Date
+    describeProduct:string
+    expirationDate:Date
     codLot:string
     quantity:number
     priceBuy:number
     priceSell:number
     laboratory:string
+    nameSupplier:string
 }
 
 export class UpdateProduct{

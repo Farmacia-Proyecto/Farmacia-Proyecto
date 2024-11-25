@@ -42,6 +42,14 @@ export class SuppliersService {
         return names;
     }
 
+    async getSupplier(nameSupplier){
+        return await this.supplierRepository.findOne({
+            where:{
+                nameSupplier:nameSupplier
+            }
+        })
+    }
+
     async createSupplier(infoSupplier:CreateSupplierDto){
         try {
             const supplier = {
