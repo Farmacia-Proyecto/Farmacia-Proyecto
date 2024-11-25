@@ -21,6 +21,10 @@ export class LaboratorysuppliersService {
         return laboratorySuppliers
     }
 
+    deleteLaboratorySupplier(nit){
+        this.laboratorySupplierRepository.delete({ supplier: { nit } });
+    }
+
     addLaboratorySupplier(infoLaboratorySupplier:AddLaboratorySupplier){
         console.log("Agregando a la entidad debil")
         console.log(infoLaboratorySupplier)

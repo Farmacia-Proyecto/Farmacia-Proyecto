@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Supplier } from './supliers.entity';
 import { Repository } from 'typeorm';
-import { CreateSupplierDto } from './dto/supplier.dto';
+import { CreateSupplierDto, updateSupplier } from './dto/supplier.dto';
 import { LaboratoryService } from 'src/laboratory/laboratory.service';
 import { CreateLaboratoryDto } from 'src/laboratory/dto/create-laboratory.dto';
 import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
@@ -59,6 +59,21 @@ export class SuppliersService {
             return {"warning":"Error al crear el proveedor","success":false}
         }
         
+    }
+
+    async updateSupplier(nit,info:updateSupplier){
+        const supplier = {
+            "nameSupplier":info.nameSupplier,
+            "phoneSupplier":info.phoneSupplier,
+            "emailSupplier":info.emailSupplier
+        }
+        this.updateLaboratoriesPartners(nit,info.laboratories)
+        return this.supplierRepository.update(nit,supplier),{"success":true}
+    }
+
+    async updateLaboratoriesPartners(nit,laboratories:CreateLaboratoryDto[]){
+        this.laboratorySuppliersService.deleteLaboratorySupplier(nit)
+        await this.addLaboratories(nit,laboratories)
     }
 
 

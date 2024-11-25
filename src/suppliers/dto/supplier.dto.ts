@@ -7,3 +7,10 @@ export class CreateSupplierDto{
     emailSupplier:string
     laboratories:CreateLaboratoryDto[]
 }
+
+export class updateSupplier{
+    nameSupplier:string
+    phoneSupplier:number
+    emailSupplier:string
+    laboratories:CreateLaboratoryDto[]
+}

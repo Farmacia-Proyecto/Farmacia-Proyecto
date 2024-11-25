@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { CreateSupplierDto } from './dto/supplier.dto';
 import { SuppliersService } from './suppliers.service';
 
@@ -16,14 +16,13 @@ export class SuppliersController {
 
     @Post()
     createSupplier(@Body() infoSupplier:CreateSupplierDto){
-        console.log(infoSupplier)
         return this.supplierService.createSupplier(infoSupplier)
     }
 
 
     @Put(":nit")
-    updateSupplier(){
-
+    updateSupplier(@Param("nit",ParseIntPipe) nit:number,@Body() info){
+        return this.supplierService.updateSupplier(nit,info)
     }
 
 }
