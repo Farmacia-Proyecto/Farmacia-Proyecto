@@ -164,7 +164,7 @@ export class ProductService {
                 return HttpStatus.BAD_REQUEST,{"warning":"La cantidad del producto no puede ser 0","success":false}
             }
         }else{
-            const checkProduct = this.getProductForCod(productFound.product.codProduct)
+            const checkProduct = await this.getProductForCod(productFound.product.codProduct)
             if(checkProduct!=null){
                 const checkLot = await this.lotService.getLot(infoProduct.codLot)
                 if(checkLot==null){
@@ -178,7 +178,7 @@ export class ProductService {
                                 productFound.product.describeProduct = infoProduct.describeProduct
                                 this.productRepository.save(productFound.product)
                                 const productLot:CreateProductsLot = {
-                                    "codProduct":infoProduct.codProduct,
+                                    "codProduct":checkProduct.codProduct,
                                     "codLot": infoProduct.codLot,
                                     "expirationDate":infoProduct.expirationDate,
                                     "price":infoProduct.priceBuy,

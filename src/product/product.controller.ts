@@ -18,14 +18,11 @@ export class ProductController {
 
     @Get("/change-laboratories/:nameSupplier")
     async getNamesLaboratories(@Param('nameSupplier') nameSupplier){
-        console.log("Username")
-        console.log(await this.productService.getNamesLaboratories(nameSupplier))
         return this.productService.getNamesLaboratories(nameSupplier)
     }
 
     @Post('/search')
     async searchProduct(@Body() nameProduct){
-        console.log(await this.productService.searchPoduct(nameProduct))
         return this.productService.searchPoduct(nameProduct)
     }
 

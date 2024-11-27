@@ -24,9 +24,28 @@ export class ProductslotService {
     }
 
     async getProductLotsForCod(codProduct){
-        return await this.productsLotRepository.findBy({
-            codProduct:codProduct
+        return await this.productsLotRepository.find({
+            where:{codProduct:codProduct,availability:true},
+            order:{expirationDate:"ASC"}
         })
+    }
+
+    async updateStock(codProduct,quantity){
+        const lots = await this.getProductLotsForCod(codProduct)
+        
+        let tmp = quantity
+        for(let i=0;i<lots.length;i++){
+            if(tmp<lots[i].quantity){
+                lots[i].quantity = lots[i].quantity-tmp
+                this.productsLotRepository.save(lots[i])
+                break
+            }else if(tmp>lots[i].quantity){
+                tmp = tmp-lots[i].quantity
+                lots[i].quantity = 0
+                lots[i].availability = false
+                this.productsLotRepository.save(lots[i])
+            }
+        }
     }
 
     async getProductLotsForCodLotAndProduct(codProduct,codLot){

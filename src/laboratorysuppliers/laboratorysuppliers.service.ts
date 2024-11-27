@@ -26,9 +26,6 @@ export class LaboratorysuppliersService {
     }
 
     addLaboratorySupplier(infoLaboratorySupplier:AddLaboratorySupplier){
-        console.log("Agregando a la entidad debil")
-        console.log(infoLaboratorySupplier)
-        console.log()
         const newlaboratorySupplier = this.laboratorySupplierRepository.create(infoLaboratorySupplier)
         this.laboratorySupplierRepository.save(newlaboratorySupplier)
         return {"success":true}
