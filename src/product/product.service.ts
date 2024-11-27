@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { CreateProduct, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
+import { AlertMinStock, CreateProduct, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
 import { LotService } from 'src/lot/lot.service';
 import { ProductslotService } from '../productsLot/productslot.service';
 import { CreateProductsLot } from '../productsLot/dto/create-productslot.dto';
@@ -29,7 +29,6 @@ export class ProductService {
         const products = await this.productRepository.find();
         const info =[];
         for(let i =0; i<products.length;i++){
-            const nameS = await this.productsSupplierService.getProductsSupplierForCodProduct(products[i].codProduct)
             let productLot = await this.productLotService.getProductLotsForCod(products[i].codProduct)
             let totalQuantity = 0;
             for(let j=0;j<productLot.length;j++){
@@ -153,7 +152,7 @@ export class ProductService {
                                 "success":false}
                         }
                     }else{
-                        return HttpStatus.BAD_REQUEST,{"warning":"El productor no existe",
+                        return HttpStatus.BAD_REQUEST,{"warning":"El proveedor no esta registrado en el sistema",
                             "success":false}
                     }   
                 }else{
@@ -238,4 +237,50 @@ export class ProductService {
         }
         return false
     }
+
+    async generatedAlertMinStock(){
+        const products = await this.productRepository.find()
+        const productAlert:AlertMinStock[] = []
+        for(let i=0;i<products.length;i++){
+            let productLot = await this.productLotService.getProductLotsForCod(products[i].codProduct)
+            let totalQuantity = 0;
+            for(let j=0;j<productLot.length;j++){
+                totalQuantity += productLot[j].quantity
+            }
+            if(totalQuantity<=10){
+                productAlert[productAlert.length]={
+                    "nameProduct":products[i].nameProduct,
+                    "laboratory": products[i].laboratory.nameLaboratory,
+                    "quantity": totalQuantity
+                }
+            }
+        }
+        return {"products":productAlert,"success":true}
+    }
+
+    async acceptOrder(){
+        const products = await this.generatedAlertMinStock()
+        const productOrder = []
+        for(let i =0;i<products.products.length;i++){
+            const product = await this.getProduct({"nameProduct":products.products[i].nameProduct,
+                "laboratory":products.products[i].laboratory})
+            productOrder[i] = {
+                "nameProduct":product.product.nameProduct,
+                "laboratory":product.product.laboratory.nameLaboratory,
+                "suppliers": await this.searchSuppliersProduct(product.product.codProduct)
+            }
+        }
+    }
+
+    async searchSuppliersProduct(codProduct){
+        const suppliers = await this.productsSupplierService.getProductsSupplierForCodProduct(codProduct)
+        const nameSuppliers = []
+        for(let i=0;i<suppliers.length;i++){
+            nameSuppliers[i] = {
+                "nameSupplier":suppliers[i].supplier.nameSupplier
+            }
+        }
+        return nameSuppliers
+    }
+
 }

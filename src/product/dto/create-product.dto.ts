@@ -26,3 +26,9 @@ export class infoGetProduct{
 export class SearchProduct{
     nameProduct:string
 }
+
+export class AlertMinStock{
+    "nameProduct":string
+    "laboratory":string
+    "quantity":number
+}

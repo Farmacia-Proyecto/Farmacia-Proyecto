@@ -35,4 +35,15 @@ export class ProductController {
     updateProduct(@Param('codProduct',ParseIntPipe) codProduct:number,@Body() infoProduct:UpdateProduct){
         return this.productService.updateProduct(codProduct,infoProduct)
     }
+
+    @Get("/alert")
+    alertMinStock(){
+        return this.productService.generatedAlertMinStock()
+    }
+
+    @Get("/acceptOrder")
+    aceeptOrder(){
+        return this.productService.acceptOrder()
+    }
+
 }

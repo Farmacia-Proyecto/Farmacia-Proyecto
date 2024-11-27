@@ -6,7 +6,7 @@ import { Supplier } from "src/suppliers/supliers.entity";
 @Entity()
 export class PurchaseOrder{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     codOrder:number
     @Column()
     totalOrder:number

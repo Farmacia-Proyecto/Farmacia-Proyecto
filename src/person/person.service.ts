@@ -89,7 +89,6 @@ export class PersonService {
             tmp[i] = tmp[i].charAt(0).toUpperCase() + tmp[i].slice(1)
             out += tmp[i]+" ";
         }
-        console.log(out)
         return out;
     }
 
