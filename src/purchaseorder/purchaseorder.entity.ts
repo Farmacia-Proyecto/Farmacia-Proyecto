@@ -1,7 +1,7 @@
 import { Person } from "src/person/person.entity";
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import { OrderDetails } from "./orderdetails.entity";
 import { Supplier } from "src/suppliers/supliers.entity";
+import { OrderDetails } from "src/orderdetails/orderdetails.entity";
 
 @Entity()
 export class PurchaseOrder{

@@ -18,6 +18,7 @@ import { DetailsinvoiceModule } from './detailsinvoice/detailsinvoice.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { ProductssupplierModule } from './productssupplier/productssupplier.module';
 import { LaboratorysuppliersModule } from './laboratorysuppliers/laboratorysuppliers.module';
+import { OrderdetailsModule } from './orderdetails/orderdetails.module';
 
 @Module({
   imports: [
@@ -36,10 +37,11 @@ import { LaboratorysuppliersModule } from './laboratorysuppliers/laboratorysuppl
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule, ProductslotModule,ProductModule, 
-    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule, InvoiceModule,
+    UserModule,PersonModule,LoginModule, ProductslotModule,LotModule,ProductModule, 
+     EmailModule, LaboratoryModule, PurchaseorderModule, InvoiceModule,
     DetailsinvoiceModule, SuppliersModule, ProductssupplierModule, ProductssupplierModule,
-    LaboratorysuppliersModule],
+    LaboratorysuppliersModule,
+    OrderdetailsModule],
   providers: [LoginService],
   controllers: [LoginController],
 })

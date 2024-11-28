@@ -1,15 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PurchaseOrder } from './purchaseorder.entity';
 import { Repository } from 'typeorm';
 import { ProductService } from 'src/product/product.service';
 import { CreateOrder } from './dto/pucharseorder.dto';
+import { REQUEST } from '@nestjs/core';
+import { SuppliersService } from 'src/suppliers/suppliers.service';
+import { PersonService } from 'src/person/person.service';
 
 @Injectable()
 export class PurchaseorderService {
 
     constructor(@InjectRepository(PurchaseOrder) private purchaseOrderRepository:Repository<PurchaseOrder>,
-    private productService:ProductService
+    @Inject(REQUEST) private readonly request: any,
+    @Inject(forwardRef(() =>ProductService))private productService:ProductService,
+    private supplierService:SuppliersService,
+    private personService:PersonService
     ){}
 
     getOrders(){
@@ -33,13 +39,14 @@ export class PurchaseorderService {
                 if(supliers[i]==orders[j].nameSupplier){
                     const product = await this.productService.getProduct({"nameProduct":orders[j].nameProduct,
                         "laboratory":orders[j].laboratory})
-                    details[details.length]={
+                        details[details.length]={
                         "codOrder":codOrder,
                         "codProduct": product.product.codProduct,
                         "quantity": orders[j].quantity
                     }
                 }
             }
+            this.purchaseOrderRepository
         }
     }
 

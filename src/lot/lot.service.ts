@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Lot } from './lot.entity';
 import { Repository } from 'typeorm';
@@ -13,7 +13,7 @@ export class LotService {
     constructor(@InjectRepository(Lot) private lotRepository:Repository<Lot>,
     @Inject(REQUEST) private readonly request: any,
     private personService:PersonService,
-    private purchaseOrderService:PurchaseorderService
+    @Inject(forwardRef(() => PurchaseorderService)) private purchaseOrderService:PurchaseorderService
     ){}
 
     getLots(){

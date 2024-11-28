@@ -12,7 +12,7 @@ import { ProductssupplierModule } from 'src/productssupplier/productssupplier.mo
 
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Product]), ProductslotModule, LotModule,
+  imports:[TypeOrmModule.forFeature([Product]), ProductslotModule,LotModule,
   LaboratoryModule,LaboratorysuppliersModule,SuppliersModule,ProductssupplierModule],
   providers: [ProductService],
   controllers: [ProductController],
