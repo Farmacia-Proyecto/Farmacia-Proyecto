@@ -52,7 +52,8 @@ export class LaboratoryService {
     async createLaboratory(nameLaboratory){
         const laboratoryFound = await this.getLaboratory(nameLaboratory);
         if(!laboratoryFound){
-            const newLaboratory = this.laboratoryRepository.create({"codLaboratory": await this.generatedCodLaboratory(),"nameLaboratory":nameLaboratory});
+            const newLaboratory = this.laboratoryRepository.create({"codLaboratory": await this.generatedCodLaboratory(),
+                "nameLaboratory":nameLaboratory});
             return await this.laboratoryRepository.save(newLaboratory),{"success":true};   
         }
         return HttpStatus.BAD_REQUEST,{"success":false}
@@ -67,6 +68,5 @@ export class LaboratoryService {
         const size = (await this.getLaboratories()).laboratory
         return  size.length + 1
     }
-
     
 }

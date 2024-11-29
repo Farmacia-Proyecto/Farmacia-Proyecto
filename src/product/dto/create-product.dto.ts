@@ -28,6 +28,7 @@ export class SearchProduct{
 }
 
 export class AlertMinStock{
+    "codProduct":number
     "nameProduct":string
     "laboratory":string
     "quantity":number

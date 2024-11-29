@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { Person } from './person.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,6 +8,7 @@ import { SearchPerson } from './dto/search-person.dto';
 import { UpdateUserPasswordDto } from 'src/user/dto/update-password-user.dto';
 import { EmailService } from 'src/email/email.service';
 import { UpdateUserDto } from './dto/update-person.dto';
+import { sendCotizacion } from 'src/email/dto/send-email.dto';
 
 @Injectable()
 export class PersonService {
@@ -53,12 +54,12 @@ export class PersonService {
     }
 
     async searchPersonByUserName(userName){
-            const persons = await this.personRepository.findOne({
-                where:{
-                    user: await this.userService.getUser(userName)
-                }
-            })
-            return persons
+        const persons = await this.personRepository.findOne({
+           where:{
+                user: await this.userService.getUser(userName)
+            }
+        })
+        return persons
     }
 
     async createPerson(infoPerson: infoPerson){
@@ -151,5 +152,9 @@ export class PersonService {
             }
         }
         return HttpStatus.BAD_REQUEST,{"success":false}
+    }
+
+    sendCotizacion(details:sendCotizacion){
+        this.emailService.sendEmailCotizacion(details)
     }
 }

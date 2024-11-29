@@ -4,7 +4,7 @@ export class CreateOrder{
     "nameProduct":string
     "nameSupplier":string
     "laboratory":string
-    "quantity":number 
+    "quantity":number
 }
 
 export class FormatGetOrders{

@@ -25,13 +25,13 @@ export class SuppliersService {
                 "nameSupplier": providersList[i].nameSupplier,
                 "phoneSupplier": providersList[i].phoneSupplier,
                 "emailSupplier": providersList[i].emailSupplier,
-                "laboratories": await this.formatNamesLaboratories(providersList[i].nit)
+                "laboratories": await this.NamesLaboratories(providersList[i].nit)
             }
         }
         return {"providers": info ,"success":true}
     }
 
-    async formatNamesLaboratories(nit){
+    async NamesLaboratories(nit){
         const laboratories = await this.laboratorySuppliersService.getLaboratorySupplierForNit(nit)
         const names = []
         for(let i =0;i<laboratories.length;i++){
@@ -54,7 +54,7 @@ export class SuppliersService {
         try {
             const supplier = {
                 "nit":infoSupplier.nit,
-                "nameSupplier":infoSupplier.nameSupplier,
+                "nameSupplier":this.formatNames(infoSupplier.nameSupplier).trim(),
                 "phoneSupplier":infoSupplier.phoneSupplier,
                 "emailSupplier":infoSupplier.emailSupplier
             }
@@ -71,7 +71,7 @@ export class SuppliersService {
 
     async updateSupplier(nit,info:updateSupplier){
         const supplier = {
-            "nameSupplier":info.nameSupplier,
+            "nameSupplier":this.formatNames(info.nameSupplier).trim(),
             "phoneSupplier":info.phoneSupplier,
             "emailSupplier":info.emailSupplier
         }
@@ -96,6 +96,17 @@ export class SuppliersService {
                 this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratoryFound.codLaboratory,"nit":nit})
             }
         }
+    }
+
+    formatNames(string:string){
+        let tmp = string.split(" ");
+        let out = "";
+        for(let i=0;i<tmp.length;i++){
+            tmp[i] = tmp[i].toLowerCase()
+            tmp[i] = tmp[i].charAt(0).toUpperCase() + tmp[i].slice(1)
+            out += tmp[i]+" ";
+        }
+        return out;
     }
 
 }

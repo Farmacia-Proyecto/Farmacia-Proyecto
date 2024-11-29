@@ -460,3 +460,98 @@ a[x-apple-data-detectors],
   </div>
  </body>
 </html>`
+
+
+
+export const cotizacion = (tabla_productos,supplier,name,type_user,phone,email)=>`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Correo Automático - Detalles de Productos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .email-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .email-header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #4CAF50;
+    }
+    .email-body {
+      line-height: 1.6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .email-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="email-header">
+      <h1>Detalles de Productos</h1>
+    </div>
+    <div class="email-body">
+      <p>Estimado/a ${supplier},</p>
+      <p>Solicito amablemente me colabore con una cotización.</p>
+      <p>A continuación, te comparto los detalles de los productos que deseo cotizar:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Código de Producto</th>
+            <th>Nombre del Producto</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Aquí se generarán las filas automáticamente -->
+          ${{tabla_productos}}
+        </tbody>
+      </table>
+      <p>Quedo atento/a para cualquier duda o comentario.</p>
+    </div>
+    <div class="email-footer">
+      <p>Saludos cordiales, PharmaTrack</p>
+      <p> ${name} - ${type_user}</p>
+      <p> ${phone} - ${email}</p>
+    </div>
+  </div>
+</body>
+</html>`

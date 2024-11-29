@@ -249,16 +249,21 @@ export class ProductService {
             }
             if(totalQuantity<=10){
                 productAlert[productAlert.length]={
+                    "codProduct":products[i].codProduct,
                     "nameProduct":products[i].nameProduct,
                     "laboratory": products[i].laboratory.nameLaboratory,
                     "quantity": totalQuantity
                 }
             }
         }
-        return {"products":productAlert,"success":true}
+        if(productAlert.length==0){
+            return {"success":false}
+        }else{
+            return {"products":productAlert,"success":true}
+        }
     }
 
-    async acceptOrder(){
+    async acceptViewOrder(){
         const products = await this.generatedAlertMinStock()
         const productOrder = []
         for(let i =0;i<products.products.length;i++){
@@ -270,6 +275,7 @@ export class ProductService {
                 "suppliers": await this.searchSuppliersProduct(product.product.codProduct)
             }
         }
+        return {"products":productOrder,"success":true}
     }
 
     async searchSuppliersProduct(codProduct){

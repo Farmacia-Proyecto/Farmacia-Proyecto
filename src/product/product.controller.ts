@@ -43,7 +43,7 @@ export class ProductController {
 
     @Get("/acceptOrder")
     aceeptOrder(){
-        return this.productService.acceptOrder()
+        return this.productService.acceptViewOrder()
     }
 
 }

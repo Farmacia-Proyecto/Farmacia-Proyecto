@@ -37,8 +37,8 @@ import { OrderdetailsModule } from './orderdetails/orderdetails.module';
       secret : jwtConstants.secret,
       signOptions: {expiresIn:"8h"}
     }),
-    UserModule,PersonModule,LoginModule, ProductslotModule,LotModule,ProductModule, 
-     EmailModule, LaboratoryModule, PurchaseorderModule, InvoiceModule,
+    UserModule,PersonModule,LoginModule, ProductslotModule,ProductModule, 
+    LotModule, EmailModule, LaboratoryModule, PurchaseorderModule, InvoiceModule,
     DetailsinvoiceModule, SuppliersModule, ProductssupplierModule, ProductssupplierModule,
     LaboratorysuppliersModule,
     OrderdetailsModule],

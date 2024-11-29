@@ -5,10 +5,9 @@ import { LotService } from './lot.service';
 import { LotController } from './lot.controller';
 import { PurchaseorderModule } from 'src/purchaseorder/purchaseorder.module';
 import { PersonModule } from 'src/person/person.module';
-import { ProductModule } from 'src/product/product.module';
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Lot]),PurchaseorderModule, PersonModule],
+    imports:[TypeOrmModule.forFeature([Lot]),forwardRef(()=>PurchaseorderModule),PersonModule],
     providers: [LotService],
     controllers: [LotController],
     exports:[LotService]
