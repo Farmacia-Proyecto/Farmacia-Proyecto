@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
@@ -18,7 +18,7 @@ import { LaboratorySuppliers } from 'src/laboratorysuppliers/laboratorysuppliers
 export class ProductService {
 
     constructor(@InjectRepository(Product) private productRepository:Repository<Product>,
-    private lotService:LotService,
+    @Inject(forwardRef(()=>LotService)) private lotService:LotService,
     private productLotService:ProductslotService,
     private laboratoryService:LaboratoryService,
     private laboratorySuppliersService:LaboratorysuppliersService,

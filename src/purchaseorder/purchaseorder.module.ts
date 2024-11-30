@@ -10,7 +10,7 @@ import { OrderdetailsModule } from 'src/orderdetails/orderdetails.module';
 
 @Module({
   imports:[TypeOrmModule.forFeature([PurchaseOrder]),PersonModule,
-  forwardRef(() => ProductModule),SuppliersModule,OrderdetailsModule],
+  forwardRef(()=>ProductModule),SuppliersModule,OrderdetailsModule],
   controllers: [PurchaseorderController],
   providers: [PurchaseorderService],
   exports:[PurchaseorderService]

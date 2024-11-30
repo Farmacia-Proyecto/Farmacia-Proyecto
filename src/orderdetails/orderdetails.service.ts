@@ -9,10 +9,10 @@ export class OrderdetailsService {
 
     constructor(@InjectRepository(OrderDetails) private orderDetailsRepository:Repository<OrderDetails>){}
 
-    createOrderDetails(orderdetails:CreateOrderDetails[]){
+    async createOrderDetails(orderdetails:CreateOrderDetails[]){
         for(let i=0;i<orderdetails.length;i++){
             const details = this.orderDetailsRepository.create(orderdetails[i])
-            this.orderDetailsRepository.save(details)
+            await this.orderDetailsRepository.save(details)
         }
     }
 

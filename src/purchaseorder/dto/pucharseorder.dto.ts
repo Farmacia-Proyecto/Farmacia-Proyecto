@@ -1,10 +1,12 @@
-import { infoGetProduct } from "src/product/dto/create-product.dto"
+import { infoGetProductOrders } from "src/product/dto/create-product.dto"
 
 export class CreateOrder{
     "nameProduct":string
     "nameSupplier":string
     "laboratory":string
     "quantity":number
+    "userName":string
+    "state":string
 }
 
 export class FormatGetOrders{
@@ -12,5 +14,5 @@ export class FormatGetOrders{
     "nameSupplier":string
     "dateRegister":Date
     "state":string
-    "products":infoGetProduct[]
+    "products":infoGetProductOrders[]
 }   

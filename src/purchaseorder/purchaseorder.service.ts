@@ -3,13 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PurchaseOrder } from './purchaseorder.entity';
 import { Repository } from 'typeorm';
 import { ProductService } from 'src/product/product.service';
-import { CreateOrder } from './dto/pucharseorder.dto';
+import { CreateOrder, FormatGetOrders } from './dto/pucharseorder.dto';
 import { REQUEST } from '@nestjs/core';
 import { SuppliersService } from 'src/suppliers/suppliers.service';
 import { PersonService } from 'src/person/person.service';
 import { CreateOrderDetails } from 'src/orderdetails/dto/orderdetails.dto';
 import { OrderdetailsService } from 'src/orderdetails/orderdetails.service';
 import { infoProductCotizacion } from 'src/email/dto/send-email.dto';
+import { infoGetProductOrders } from 'src/product/dto/create-product.dto';
 
 @Injectable()
 export class PurchaseorderService {
@@ -22,8 +23,34 @@ export class PurchaseorderService {
     private orderDetailsService:OrderdetailsService
     ){}
 
-    getOrders(){
+    async getOrders(){
+       return {"orders": await this.formatGetOrders(),"success":true}
+    }
 
+    async formatGetOrders(){
+        const orders = await this.purchaseOrderRepository.find({
+            relations:['supplier']
+        })
+        const format:FormatGetOrders[] = []
+        const formatProducts:infoGetProductOrders[] = []
+        for(let i=0;i<orders.length;i++){
+            const details = orders[i].orderDetails
+            for(let j=0;j<details.length;j++){
+                formatProducts[j]= {
+                    "nameProduct":(await this.productService.getProductForCod(details[j].codProduct)).nameProduct,
+                    "laboratory": (await this.productService.getProductForCod(details[j].codProduct)).laboratory.nameLaboratory,
+                    "quantity":details[j].quantity
+                }
+            }
+            format[i] = {
+                "codOrder":orders[i].codOrder,
+                "nameSupplier":orders[i].supplier.nameSupplier,
+                "dateRegister":orders[i].orderDate,
+                "state":orders[i].state,
+                "products": formatProducts
+            }
+        }
+        return format
     }
 
     getOrder(corOrder){
@@ -35,24 +62,23 @@ export class PurchaseorderService {
     }
 
     async createOrder(orders:CreateOrder[]){
-        //try {
-            //console.log(await this.request.user.userName)
+        try {
+            console.log(orders)
             const date = new Date()
             const supliers = this.selectSuppliers(orders)
-            console.log(this.purchaseOrderRepository)
-            const person = await this.personService.searchPersonByUserName(this.request.user.userName)
+            const person = await this.personService.searchPersonByUserName(orders[0].userName)
             for(let i=0;i<supliers.length;i++){
                 const details:CreateOrderDetails[] = []
                 const productEmail:infoProductCotizacion[] = []
                 const codOrder = await this.generatedCodOrder()
-                for(let j=0;i<orders.length;j++){
-                    if(supliers[i]==orders[j].nameSupplier){
+                for(let j=0;j<orders.length;j++){
+                    if(supliers[i]===orders[j].nameSupplier){
                         const product = await this.productService.getProduct({"nameProduct":orders[j].nameProduct,
                             "laboratory":orders[j].laboratory})
                             details[details.length]={
-                            "codOrder":codOrder,
+                            "codOrder": codOrder,
                             "codProduct": product.product.codProduct,
-                            "quantity": orders[j].quantity
+                            "quantity": orders[j].quantity,
                         }
                         productEmail[productEmail.length] = {
                             "codProduct": product.product.codProduct,
@@ -65,18 +91,20 @@ export class PurchaseorderService {
                     "codOrder":codOrder,
                     "orderDate":date,
                     "supplier": await this.supplierService.getSupplier(orders[i].nameSupplier),
-                    "person": person
+                    "person": person,
+                    "state": "Enviada"
                 })
-                this.purchaseOrderRepository.save(order)
+                await this.purchaseOrderRepository.save(order)
                 this.orderDetailsService.createOrderDetails(details)
                 this.personService.sendCotizacion({"products":productEmail,
                     "name":(person.namePerson +" "+person.lastNamePerson),
                     "phone":person.phone, "email": person.email,
                     "supplier":orders[i].nameSupplier,"typeUser":person.user.typeUser})
             }
-        //} catch (error) {
-            //return HttpStatus.BAD_REQUEST
-        //}
+            return {"success":true}
+        } catch (error) {
+            return HttpStatus.BAD_REQUEST,{"success":false}
+        }
     }
 
 

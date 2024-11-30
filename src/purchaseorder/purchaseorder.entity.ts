@@ -1,5 +1,5 @@
 import { Person } from "src/person/person.entity";
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Supplier } from "src/suppliers/supliers.entity";
 import { OrderDetails } from "src/orderdetails/orderdetails.entity";
 
@@ -12,11 +12,15 @@ export class PurchaseOrder{
     totalOrder:number
     @Column()
     orderDate:Date
+    @Column()
+    state:string
     @ManyToOne(()=>Supplier,supplier=>supplier.nit)
+    @JoinColumn({name:"nitSupplier"})
     supplier:Supplier
     @ManyToOne(()=>Person,person=>person.document)
+    @JoinColumn({name:"documentPerson"})
     person:Person
-    @OneToMany(()=>OrderDetails,orderdetails=>orderdetails.purchaseOrder)
-    orderDetails:OrderDetails
+    @OneToMany(()=>OrderDetails,orderdetails=>orderdetails.purchaseOrder,{eager:true})
+    orderDetails:OrderDetails[]
 
 }

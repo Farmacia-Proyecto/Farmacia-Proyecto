@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { PurchaseorderService } from './purchaseorder.service';
 import { CreateOrder } from './dto/pucharseorder.dto';
 
@@ -6,6 +6,12 @@ import { CreateOrder } from './dto/pucharseorder.dto';
 export class PurchaseorderController {
 
     constructor(private purchaseOrderService:PurchaseorderService){}
+
+    
+    @Get()
+    getOrders(){
+        return this.purchaseOrderService.getOrders()
+    }
 
     @Post()
     createOrder(@Body() infoOrder:CreateOrder[]){

@@ -23,6 +23,12 @@ export class infoGetProduct{
     laboratory:string
 }
 
+export class infoGetProductOrders{
+    nameProduct:string
+    laboratory:string
+    quantity:number
+}
+
 export class SearchProduct{
     nameProduct:string
 }
