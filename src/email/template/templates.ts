@@ -463,7 +463,17 @@ a[x-apple-data-detectors],
 
 
 
-export const cotizacion = (tabla_productos,supplier,name,type_user,phone,email)=>`<!DOCTYPE html>
+export const cotizacion = (tabla_productos,supplier,name,type_user,phone,email)=>{ 
+  const filas = tabla_productos
+    .map(
+      producto => `
+      <tr>
+        <td>${producto.codProduct}</td>
+        <td>${producto.nameProduct}</td>
+        <td>${producto.quantity}</td>
+      </tr>`
+    ).join("");
+  return`<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -542,7 +552,7 @@ export const cotizacion = (tabla_productos,supplier,name,type_user,phone,email)=
         </thead>
         <tbody>
           <!-- Aquí se generarán las filas automáticamente -->
-          ${{tabla_productos}}
+          ${filas}
         </tbody>
       </table>
       <p>Quedo atento/a para cualquier duda o comentario.</p>
@@ -554,4 +564,4 @@ export const cotizacion = (tabla_productos,supplier,name,type_user,phone,email)=
     </div>
   </div>
 </body>
-</html>`
+</html>`}

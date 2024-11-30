@@ -36,14 +36,4 @@ export class ProductController {
         return this.productService.updateProduct(codProduct,infoProduct)
     }
 
-    @Get("/alert")
-    alertMinStock(){
-        return this.productService.generatedAlertMinStock()
-    }
-
-    @Get("/acceptOrder")
-    aceeptOrder(){
-        return this.productService.acceptViewOrder()
-    }
-
 }

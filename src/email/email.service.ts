@@ -28,7 +28,7 @@ export class EmailService {
     async sendEmailCotizacion(info:sendCotizacion){
         await transporter.sendMail({
             from: '"Cotización" <juan.rodriguez99@uptc.edu.co>', 
-            to: info.email, 
+            to: info.emailSupplier, 
             subject: "Cotización",
             html: cotizacion(info.products,info.supplier,info.name,info.typeUser,info.phone,info.email)
           });

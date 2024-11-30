@@ -18,4 +18,14 @@ export class PurchaseorderController {
         return this.purchaseOrderService.createOrder(infoOrder)
     }
 
+    @Get("/alert")
+    alertMinStock(){
+        return this.purchaseOrderService.generatedAlertMinStock()
+    }
+
+    @Get("/acceptOrder")
+    aceeptOrder(){
+        return this.purchaseOrderService.acceptViewOrder()
+    }
+
 }

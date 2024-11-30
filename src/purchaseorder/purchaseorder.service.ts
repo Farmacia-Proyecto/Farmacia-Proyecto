@@ -10,7 +10,11 @@ import { PersonService } from 'src/person/person.service';
 import { CreateOrderDetails } from 'src/orderdetails/dto/orderdetails.dto';
 import { OrderdetailsService } from 'src/orderdetails/orderdetails.service';
 import { infoProductCotizacion } from 'src/email/dto/send-email.dto';
-import { infoGetProductOrders } from 'src/product/dto/create-product.dto';
+import { AlertMinStock, infoGetProductOrders } from 'src/product/dto/create-product.dto';
+import { LaboratorySuppliers } from 'src/laboratorysuppliers/laboratorysuppliers.entity';
+import { LaboratoryService } from 'src/laboratory/laboratory.service';
+import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
+import { ProductslotService } from 'src/productsLot/productslot.service';
 
 @Injectable()
 export class PurchaseorderService {
@@ -18,9 +22,12 @@ export class PurchaseorderService {
     constructor(@InjectRepository(PurchaseOrder) private purchaseOrderRepository:Repository<PurchaseOrder>,
     @Inject(REQUEST) private readonly request: any,
     @Inject(forwardRef(()=>ProductService)) private productService:ProductService,
+    private laboratoryService:LaboratoryService,
+    private laboratorySupplierService:LaboratorysuppliersService,
     private supplierService:SuppliersService,
     private personService:PersonService,
-    private orderDetailsService:OrderdetailsService
+    private orderDetailsService:OrderdetailsService,
+    private productLotService:ProductslotService
     ){}
 
     async getOrders(){
@@ -32,15 +39,20 @@ export class PurchaseorderService {
             relations:['supplier']
         })
         const format:FormatGetOrders[] = []
-        const formatProducts:infoGetProductOrders[] = []
         for(let i=0;i<orders.length;i++){
+            const formatProducts:infoGetProductOrders[] = []
             const details = orders[i].orderDetails
+            console.log("Details")
+            console.log(details)
             for(let j=0;j<details.length;j++){
                 formatProducts[j]= {
                     "nameProduct":(await this.productService.getProductForCod(details[j].codProduct)).nameProduct,
                     "laboratory": (await this.productService.getProductForCod(details[j].codProduct)).laboratory.nameLaboratory,
                     "quantity":details[j].quantity
                 }
+                console.log("FormatProduct")
+                console.log("Iteracion j:  ",j )
+                console.log(formatProducts)
             }
             format[i] = {
                 "codOrder":orders[i].codOrder,
@@ -49,6 +61,9 @@ export class PurchaseorderService {
                 "state":orders[i].state,
                 "products": formatProducts
             }
+            console.log("Format")
+            console.log("Iteracion i:  ",i )
+            console.log(format)
         }
         return format
     }
@@ -63,7 +78,6 @@ export class PurchaseorderService {
 
     async createOrder(orders:CreateOrder[]){
         try {
-            console.log(orders)
             const date = new Date()
             const supliers = this.selectSuppliers(orders)
             const person = await this.personService.searchPersonByUserName(orders[0].userName)
@@ -99,15 +113,13 @@ export class PurchaseorderService {
                 this.personService.sendCotizacion({"products":productEmail,
                     "name":(person.namePerson +" "+person.lastNamePerson),
                     "phone":person.phone, "email": person.email,
-                    "supplier":orders[i].nameSupplier,"typeUser":person.user.typeUser})
+                    "supplier":orders[i].nameSupplier,"typeUser":person.user.typeUser,"emailSupplier":order.supplier.emailSupplier})
             }
             return {"success":true}
         } catch (error) {
             return HttpStatus.BAD_REQUEST,{"success":false}
         }
     }
-
-
 
     selectSuppliers(orders:CreateOrder[]){
         const suppliers = []
@@ -119,10 +131,70 @@ export class PurchaseorderService {
         return suppliers
     }
 
+    getOrderInStateEnvOrPro(){
+        return this.purchaseOrderRepository
+        .createQueryBuilder('order')
+        .where('order.state IN (:...states)', { states: ['Enviada', 'En progreso']})
+        .getMany();
+    }
+
 
     async generatedCodOrder(){
         const size = await this.purchaseOrderRepository.find()
         return  size.length + 1
     }
+
+    async generatedAlertMinStock(){
+        const products = await this.productService.getProducts()
+        const productAlert:AlertMinStock[] = []
+        for(let i=0;i<products.products.length;i++){
+            let productLot = await this.productLotService.getProductLotsForCod(products.products[i].codProduct)
+            let totalQuantity = 0;
+            for(let j=0;j<productLot.length;j++){
+                totalQuantity += productLot[j].quantity
+            }
+            if(totalQuantity<=10){
+                productAlert[productAlert.length]={
+                    "codProduct":products.products[i].codProduct,
+                    "nameProduct":products.products[i].nameProduct,
+                    "laboratory": products.products[i].laboratory,
+                    "quantity": totalQuantity
+                }
+            }
+        }
+        if(productAlert.length==0){
+            return {"success":false}
+        }else{
+            return {"products":productAlert,"success":true}
+        }
+    }
+
+    async acceptViewOrder(){
+        const products = await this.generatedAlertMinStock()
+        const productOrder = []
+        for(let i =0;i<products.products.length;i++){
+            const product = await this.productService.getProduct({"nameProduct":products.products[i].nameProduct,
+                "laboratory":products.products[i].laboratory})
+            productOrder[i] = {
+                "nameProduct":product.product.nameProduct,
+                "laboratory":product.product.laboratory.nameLaboratory,
+                "suppliers": await this.searchSuppliersProduct(product.product.laboratory.nameLaboratory)
+            }
+        }
+        return {"products":productOrder,"success":true}
+    }
+
+    async searchSuppliersProduct(nameLaboratory){
+        const lab = await this.laboratoryService.getLaboratory(nameLaboratory)
+        const suppliers:LaboratorySuppliers[] = await this.laboratorySupplierService.getLaboratorySupplierForCodLaboratory(lab.codLaboratory)
+        const nameSuppliers = []
+        for(let i=0;i<suppliers.length;i++){
+            nameSuppliers[i] = {
+                "nameSupplier":suppliers[i].supplier.nameSupplier
+            }
+        }
+        return nameSuppliers
+    }
+
 
 }
