@@ -21,6 +21,14 @@ export class LaboratorysuppliersService {
         return laboratorySuppliers
     }
 
+    async getLaboratorySupplierForCodLaboratory(codLaboratory){
+        const laboratorySuppliers = await this.laboratorySupplierRepository.find({
+            where: { codLaboratory },
+            relations: ['supplier'],
+        });
+        return laboratorySuppliers
+    }
+
     async deleteLaboratorySupplier(nit){
         await this.laboratorySupplierRepository.delete({ supplier: { nit } });
     }

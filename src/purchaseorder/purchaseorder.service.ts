@@ -39,7 +39,7 @@ export class PurchaseorderService {
             //console.log(await this.request.user.userName)
             const date = new Date()
             const supliers = this.selectSuppliers(orders)
-            console.log(supliers)
+            console.log(this.purchaseOrderRepository)
             const person = await this.personService.searchPersonByUserName(this.request.user.userName)
             for(let i=0;i<supliers.length;i++){
                 const details:CreateOrderDetails[] = []

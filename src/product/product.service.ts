@@ -12,6 +12,7 @@ import { SuppliersService } from 'src/suppliers/suppliers.service';
 import { Laboratory } from 'src/laboratory/laboratory.entity';
 import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
 import { CreateProductsSupplierDto } from 'src/productssupplier/dto/productssupplier.dto';
+import { LaboratorySuppliers } from 'src/laboratorysuppliers/laboratorysuppliers.entity';
 
 @Injectable()
 export class ProductService {
@@ -272,14 +273,15 @@ export class ProductService {
             productOrder[i] = {
                 "nameProduct":product.product.nameProduct,
                 "laboratory":product.product.laboratory.nameLaboratory,
-                "suppliers": await this.searchSuppliersProduct(product.product.codProduct)
+                "suppliers": await this.searchSuppliersProduct(product.product.laboratory.nameLaboratory)
             }
         }
         return {"products":productOrder,"success":true}
     }
 
-    async searchSuppliersProduct(codProduct){
-        const suppliers = await this.productsSupplierService.getProductsSupplierForCodProduct(codProduct)
+    async searchSuppliersProduct(nameLaboratory){
+        const lab = await this.laboratoryService.getLaboratory(nameLaboratory)
+        const suppliers:LaboratorySuppliers[] = await this.laboratorySuppliersService.getLaboratorySupplierForCodLaboratory(lab.codLaboratory)
         const nameSuppliers = []
         for(let i=0;i<suppliers.length;i++){
             nameSuppliers[i] = {
