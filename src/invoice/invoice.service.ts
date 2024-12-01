@@ -6,8 +6,9 @@ import { CreateInvoice } from './dto/invoice.dto';
 import { DetailsinvoiceService } from 'src/detailsinvoice/detailsinvoice.service';
 import { PersonService } from 'src/person/person.service';
 import { formatDetails, getReportGeneral, getReportSpecifyProduct, infoReportGeneralSell, infoReportSpecificProductSell } from './dto/reports.dto';
-import { format } from 'util';
 import { ProductService } from 'src/product/product.service';
+import { format } from 'date-fns';
+
 
 @Injectable()
 export class InvoiceService {
