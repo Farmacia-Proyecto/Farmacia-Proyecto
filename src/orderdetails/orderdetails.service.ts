@@ -29,4 +29,16 @@ export class OrderdetailsService {
         }
     }
 
+    async updateOrderInProgess(codOrder){
+        const order = await this.orderDetailsRepository.findBy({
+            codOrder:codOrder
+        })
+        for(let i=0;i<order.length;i++){
+            if(order[i].price==0){
+                this.orderDetailsRepository.delete(order[i])
+            }
+        }
+    }
+
+
 }

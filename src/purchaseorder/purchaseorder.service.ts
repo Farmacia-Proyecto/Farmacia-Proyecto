@@ -211,22 +211,38 @@ export class PurchaseorderService {
 
     async changeStateInProgress(codOrder,info:InProgrees){
         try {
-            const order = await this.getOrder(codOrder)
-        const details = order.orderDetails
-        for(let i=0;i<details.length;i++){
-            for(let j=0;j<info.products.length;j++){
-                const product = await this.productService.getProduct({"nameProduct":info.products[j].nameProduct,
-                    "laboratory":info.products[j].laboratory})
-                if(details[i].codProduct==product.product.codProduct){
-                    this.orderDetailsService.updateOrderDetails(codOrder,product.product.codProduct,info.products[j].price)
+            if(info.state==="En progreso"){
+                const order = await this.getOrder(codOrder)
+                const details = order.orderDetails
+                for(let i=0;i<details.length;i++){
+                    for(let j=0;j<info.products.length;j++){
+                        const product = await this.productService.getProduct({"nameProduct":info.products[j].nameProduct,
+                            "laboratory":info.products[j].laboratory})
+                        if(details[i].codProduct==product.product.codProduct){
+                            this.orderDetailsService.updateOrderDetails(codOrder,product.product.codProduct,info.products[j].price)
+                        }
+                    }
                 }
+                this.purchaseOrderRepository.update(codOrder,{state:info.state})
+                this.orderDetailsService.updateOrderInProgess(codOrder)
+                return {"success":true}
+            }else{
+                this.purchaseOrderRepository.update(codOrder,{state:info.state})
+                return {"success":true}
             }
-        }
-        this.purchaseOrderRepository.update(codOrder,{state:info.state})
-        return {"success":true}
         } catch (error) {
             return {"succes":false}   
         }
+    }
+
+    updateStateCanOrRec(codOrder,state){
+        try {
+            this.purchaseOrderRepository.update(codOrder,state)
+            return {"success":true}
+        } catch (error) {
+            return {"success":false}
+        }
+        
     }
 
 }
