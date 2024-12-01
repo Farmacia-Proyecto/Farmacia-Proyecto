@@ -13,8 +13,9 @@ export class InvoiceController {
         return this.invoiceService.createInvoice(infoInvoice)
     }
 
-    @Get("/generalReport")
+    @Post("/generalReport")
     async reportGeneralSell(@Body() rangDate:infoReportGeneralSell){
+        console.log(rangDate)
         return this.invoiceService.reportGeneralSell(rangDate)
     }
 

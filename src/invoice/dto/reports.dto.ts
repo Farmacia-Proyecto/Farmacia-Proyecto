@@ -12,7 +12,7 @@ export class infoReportSpecificProductSell{
 
 export class getReportGeneral{
     "codInvoice":number
-    "date": Date
+    "date": string
     "namePerson":string
     "documentPerson":number
     "documentClient": number
@@ -31,7 +31,7 @@ export class formatDetails{
     "unitPrice":number
 }
 
-export class getReportSpecify{
+export class getReportSpecifyProduct{
     "codInvoice":number
     "date": Date
     "namePerson":string
@@ -41,5 +41,5 @@ export class getReportSpecify{
     "totalPay": number
     "subTotal": number
     "iva": number
-    "details": formatDetails[]
+    "details": formatDetails
 }

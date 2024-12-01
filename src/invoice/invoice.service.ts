@@ -7,14 +7,14 @@ import { DetailsinvoiceService } from 'src/detailsinvoice/detailsinvoice.service
 import { PersonService } from 'src/person/person.service';
 import { formatDetails, getReportGeneral, infoReportGeneralSell, infoReportSpecificProductSell } from './dto/reports.dto';
 import { LaboratoryService } from 'src/laboratory/laboratory.service';
+import { format } from 'util';
 
 @Injectable()
 export class InvoiceService {
 
     constructor(@InjectRepository(Invoice) private invoiceRepository:Repository<Invoice>,
     private detailsInvoiceService:DetailsinvoiceService,
-    private personService:PersonService,
-    private laboratoryService:LaboratoryService
+    private personService:PersonService
     ){}
 
     async getInvoices(){
@@ -82,9 +82,10 @@ export class InvoiceService {
                         "unitPrice":detailInvoice[j].product.price
                     } 
                 }
+                const date = format(new Date(invoices[i].date), 'yyyy-MM-dd');
                 formatGeneralSell[i] = {
                     "codInvoice":invoices[i].codInvoice,
-                    "date":invoices[i].date,
+                    "date":date,
                     "documentClient":invoices[i].documentClient,
                     "namePerson": invoices[i].person.namePerson +" "+invoices[i].person.lastNamePerson,
                     "documentPerson": invoices[i].person.document,
@@ -105,6 +106,16 @@ export class InvoiceService {
         const startDate = infoReportSpecifucProductSell.startDate
         const finalDate = infoReportSpecifucProductSell.finalDate
         const invoices = await this.invoiceRepository
+        .createQueryBuilder('invoice')
+        .leftJoinAndSelect('invoice.person','person')
+        .leftJoinAndSelect('invoice.detailsInvoice','detailsInvoice')
+        .leftJoinAndSelect('detailsInvoice.product','product')
+        .leftJoinAndSelect('product.laboratory','laboratory')
+        .where('invoice.date BETWEEN :startDate AND :finalDate', { 
+            startDate,
+            finalDate
+        })
+        .getMany();
     }
 
 }

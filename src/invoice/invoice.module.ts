@@ -8,7 +8,7 @@ import { PersonModule } from 'src/person/person.module';
 import { LaboratoryModule } from 'src/laboratory/laboratory.module';
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Invoice]),DetailsinvoiceModule,PersonModule,LaboratoryModule],
+    imports:[TypeOrmModule.forFeature([Invoice]),DetailsinvoiceModule,PersonModule],
     providers:[InvoiceService],
     controllers:[InvoiceController],
     exports:[InvoiceService]
