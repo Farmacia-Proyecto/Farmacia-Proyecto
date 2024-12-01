@@ -5,16 +5,17 @@ import { Repository } from 'typeorm';
 import { CreateInvoice } from './dto/invoice.dto';
 import { DetailsinvoiceService } from 'src/detailsinvoice/detailsinvoice.service';
 import { PersonService } from 'src/person/person.service';
-import { formatDetails, getReportGeneral, infoReportGeneralSell, infoReportSpecificProductSell } from './dto/reports.dto';
-import { LaboratoryService } from 'src/laboratory/laboratory.service';
+import { formatDetails, getReportGeneral, getReportSpecifyProduct, infoReportGeneralSell, infoReportSpecificProductSell } from './dto/reports.dto';
 import { format } from 'util';
+import { ProductService } from 'src/product/product.service';
 
 @Injectable()
 export class InvoiceService {
 
     constructor(@InjectRepository(Invoice) private invoiceRepository:Repository<Invoice>,
     private detailsInvoiceService:DetailsinvoiceService,
-    private personService:PersonService
+    private personService:PersonService,
+    private productService:ProductService
     ){}
 
     async getInvoices(){
@@ -116,6 +117,47 @@ export class InvoiceService {
             finalDate
         })
         .getMany();
+        return this.formatSpecificProductSell(invoices,infoReportSpecifucProductSell.nameProduct,
+            infoReportSpecifucProductSell.laboratory)
     }
 
+    async formatSpecificProductSell(invoices:Invoice[],nameProduct,laboratory){
+        try {
+            const formatGeneralSell:getReportSpecifyProduct[]=[]
+            for(let i=0;i<invoices.length;i++){
+                let formatDetails:formatDetails = null
+                const detailInvoice = invoices[i].detailsInvoice
+                for(let j=0;j<detailInvoice.length;j++){
+                    const product = await this.productService.getProduct({"nameProduct":nameProduct,"laboratory":laboratory})
+                    if(detailInvoice[j].product.codProduct===product.product.codProduct){
+                        formatDetails ={
+                            "nameProduct":detailInvoice[j].product.nameProduct,
+                            "laboratory":detailInvoice[j].product.laboratory.nameLaboratory,
+                            "quantity":detailInvoice[j].quantity,
+                            "totalPrice":detailInvoice[j].price,
+                            "unitPrice":detailInvoice[j].product.price
+                        }
+                    } 
+                }
+                const date = format(new Date(invoices[i].date), 'yyyy-MM-dd');
+                if(formatDetails!=null){
+                    formatGeneralSell[formatGeneralSell.length] = {
+                        "codInvoice":invoices[i].codInvoice,
+                        "date":date,
+                        "documentClient":invoices[i].documentClient,
+                        "namePerson": invoices[i].person.namePerson +" "+invoices[i].person.lastNamePerson,
+                        "documentPerson": invoices[i].person.document,
+                        "typePayment": invoices[i].typePayment,
+                        "subTotal": invoices[i].subTotal,
+                        "iva": invoices[i].iva,
+                        "totalPay":invoices[i].totalPay,
+                        "details": formatDetails
+                    }
+                }
+            }
+            return {"invoices":formatGeneralSell,"success":true}
+        } catch (error) {
+            return {"success":false}   
+        }
+    }
 }

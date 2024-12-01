@@ -33,7 +33,7 @@ export class formatDetails{
 
 export class getReportSpecifyProduct{
     "codInvoice":number
-    "date": Date
+    "date": string
     "namePerson":string
     "documentPerson":number
     "documentClient": number
