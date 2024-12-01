@@ -29,3 +29,17 @@ export class productInProgrees{
     "quantity":number
     "price":number
 }
+
+export class Recive{
+    "state":string
+    "products":ProductsRecive[]
+}
+
+export class ProductsRecive{
+    "nameProduct":string
+    "laboratory":string
+    "codLot":string
+    "price":number
+    "expirationDate":Date
+    "quantity":number
+}

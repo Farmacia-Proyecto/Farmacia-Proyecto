@@ -13,6 +13,7 @@ import { Laboratory } from 'src/laboratory/laboratory.entity';
 import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
 import { CreateProductsSupplierDto } from 'src/productssupplier/dto/productssupplier.dto';
 import { LaboratorySuppliers } from 'src/laboratorysuppliers/laboratorysuppliers.entity';
+import { ProductsRecive } from 'src/purchaseorder/dto/pucharseorder.dto';
 
 @Injectable()
 export class ProductService {
@@ -239,4 +240,26 @@ export class ProductService {
         return false
     }
 
-}
+    async createLotWithOder(infoProduct:ProductsRecive,priceBuy){
+        const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
+            "laboratory":infoProduct.laboratory})
+        const checkProduct = await this.getProductForCod(productFound.product.codProduct)
+        if(checkProduct!=null){
+            const checkLot = await this.lotService.getLot(infoProduct.codLot)
+            if(checkLot==null){
+                await this.lotService.createLot({"codLot":infoProduct.codLot})
+                productFound.product.price = infoProduct.price
+                this.productRepository.save(productFound.product)
+                const productLot:CreateProductsLot = {
+                    "codProduct":checkProduct.codProduct,
+                    "codLot": infoProduct.codLot,
+                    "expirationDate":infoProduct.expirationDate,
+                    "price":priceBuy,
+                    "quantity":infoProduct.quantity,
+                    "availability":true
+                }
+                return await this.productLotService.createProductLot(productLot),{"success":true}
+            }
+        }
+    }
+}  

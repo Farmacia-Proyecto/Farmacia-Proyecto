@@ -27,6 +27,7 @@ export class infoGetProductOrders{
     nameProduct:string
     laboratory:string
     quantity:number
+    price:number
 }
 
 export class SearchProduct{

@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PurchaseOrder } from './purchaseorder.entity';
 import { Repository } from 'typeorm';
 import { ProductService } from 'src/product/product.service';
-import { CreateOrder, FormatGetOrders, InProgrees } from './dto/pucharseorder.dto';
-import { REQUEST } from '@nestjs/core';
+import { CreateOrder, FormatGetOrders, InProgrees, Recive } from './dto/pucharseorder.dto';
 import { SuppliersService } from 'src/suppliers/suppliers.service';
 import { PersonService } from 'src/person/person.service';
 import { CreateOrderDetails } from 'src/orderdetails/dto/orderdetails.dto';
@@ -15,12 +14,12 @@ import { LaboratorySuppliers } from 'src/laboratorysuppliers/laboratorysuppliers
 import { LaboratoryService } from 'src/laboratory/laboratory.service';
 import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
 import { ProductslotService } from 'src/productsLot/productslot.service';
+import { LotService } from 'src/lot/lot.service';
 
 @Injectable()
 export class PurchaseorderService {
 
     constructor(@InjectRepository(PurchaseOrder) private purchaseOrderRepository:Repository<PurchaseOrder>,
-    @Inject(REQUEST) private readonly request: any,
     @Inject(forwardRef(()=>ProductService)) private productService:ProductService,
     private laboratoryService:LaboratoryService,
     private laboratorySupplierService:LaboratorysuppliersService,
@@ -31,33 +30,38 @@ export class PurchaseorderService {
     ){}
 
     async getOrders(){
-       return {"orders": await this.formatGetOrders(),"success":true}
+       return await this.formatGetOrders()
     }
 
     async formatGetOrders(){
-        const orders = await this.purchaseOrderRepository.find({
-            relations:['supplier']
-        })
-        const format:FormatGetOrders[] = []
-        for(let i=0;i<orders.length;i++){
-            const formatProducts:infoGetProductOrders[] = []
-            const details = orders[i].orderDetails
-            for(let j=0;j<details.length;j++){
-                formatProducts[j]= {
-                    "nameProduct":(await this.productService.getProductForCod(details[j].codProduct)).nameProduct,
-                    "laboratory": (await this.productService.getProductForCod(details[j].codProduct)).laboratory.nameLaboratory,
-                    "quantity":details[j].quantity
+        try {
+            const orders = await this.purchaseOrderRepository.find({
+                relations:['supplier']
+            })
+            const format:FormatGetOrders[] = []
+            for(let i=0;i<orders.length;i++){
+                const formatProducts:infoGetProductOrders[] = []
+                const details = orders[i].orderDetails
+                for(let j=0;j<details.length;j++){
+                    formatProducts[j]= {
+                        "nameProduct":(await this.productService.getProductForCod(details[j].codProduct)).nameProduct,
+                        "laboratory": (await this.productService.getProductForCod(details[j].codProduct)).laboratory.nameLaboratory,
+                        "quantity":details[j].quantity,
+                        "price":details[j].price
+                    }
+                }
+                format[i] = {
+                    "codOrder":orders[i].codOrder,
+                    "nameSupplier":orders[i].supplier.nameSupplier,
+                    "dateRegister":orders[i].orderDate,
+                    "state":orders[i].state,
+                    "products": formatProducts
                 }
             }
-            format[i] = {
-                "codOrder":orders[i].codOrder,
-                "nameSupplier":orders[i].supplier.nameSupplier,
-                "dateRegister":orders[i].orderDate,
-                "state":orders[i].state,
-                "products": formatProducts
-            }
+            return {"orders":format,"success":true}
+        } catch (error) {
+            return {"success":false}
         }
-        return format
     }
 
     getOrder(corOrder){
@@ -219,7 +223,8 @@ export class PurchaseorderService {
                         const product = await this.productService.getProduct({"nameProduct":info.products[j].nameProduct,
                             "laboratory":info.products[j].laboratory})
                         if(details[i].codProduct==product.product.codProduct){
-                            this.orderDetailsService.updateOrderDetails(codOrder,product.product.codProduct,info.products[j].price)
+                            this.orderDetailsService.updateOrderDetails(codOrder,product.product.codProduct,
+                                info.products[j].price,info.products[j].quantity)
                         }
                     }
                 }
@@ -235,14 +240,15 @@ export class PurchaseorderService {
         }
     }
 
-    updateStateCanOrRec(codOrder,state){
-        try {
-            this.purchaseOrderRepository.update(codOrder,state)
-            return {"success":true}
-        } catch (error) {
-            return {"success":false}
+    async changeStateRecive(codOrder,info:Recive){
+        this.orderDetailsService.checkOrderRecive(codOrder,info.products)
+        for(let i=0;i<info.products.length;i++){
+            const product = await this.productService.getProduct({"nameProduct":info.products[i].nameProduct,
+                "laboratory":info.products[i].laboratory
+            })
+            const detailOrder = this.orderDetailsService.searchOrderDetails(codOrder,product.product.codProduct)
+            this.productService.createLotWithOder(info.products[i],(await detailOrder).price)
         }
-        
     }
 
 }

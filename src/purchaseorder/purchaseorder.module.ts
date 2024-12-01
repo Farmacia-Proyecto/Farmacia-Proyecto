@@ -10,6 +10,7 @@ import { OrderdetailsModule } from 'src/orderdetails/orderdetails.module';
 import { LaboratoryModule } from 'src/laboratory/laboratory.module';
 import { LaboratorysuppliersModule } from 'src/laboratorysuppliers/laboratorysuppliers.module';
 import { ProductslotModule } from 'src/productsLot/productslot.module';
+import { LotService } from 'src/lot/lot.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([PurchaseOrder]),PersonModule,
