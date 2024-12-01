@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PurchaseOrder } from './purchaseorder.entity';
 import { Repository } from 'typeorm';
 import { ProductService } from 'src/product/product.service';
-import { CreateOrder, FormatGetOrders } from './dto/pucharseorder.dto';
+import { CreateOrder, FormatGetOrders, InProgrees } from './dto/pucharseorder.dto';
 import { REQUEST } from '@nestjs/core';
 import { SuppliersService } from 'src/suppliers/suppliers.service';
 import { PersonService } from 'src/person/person.service';
@@ -42,17 +42,12 @@ export class PurchaseorderService {
         for(let i=0;i<orders.length;i++){
             const formatProducts:infoGetProductOrders[] = []
             const details = orders[i].orderDetails
-            console.log("Details")
-            console.log(details)
             for(let j=0;j<details.length;j++){
                 formatProducts[j]= {
                     "nameProduct":(await this.productService.getProductForCod(details[j].codProduct)).nameProduct,
                     "laboratory": (await this.productService.getProductForCod(details[j].codProduct)).laboratory.nameLaboratory,
                     "quantity":details[j].quantity
                 }
-                console.log("FormatProduct")
-                console.log("Iteracion j:  ",j )
-                console.log(formatProducts)
             }
             format[i] = {
                 "codOrder":orders[i].codOrder,
@@ -61,9 +56,6 @@ export class PurchaseorderService {
                 "state":orders[i].state,
                 "products": formatProducts
             }
-            console.log("Format")
-            console.log("Iteracion i:  ",i )
-            console.log(format)
         }
         return format
     }
@@ -134,6 +126,7 @@ export class PurchaseorderService {
     getOrderInStateEnvOrPro(){
         return this.purchaseOrderRepository
         .createQueryBuilder('order')
+        .leftJoinAndSelect('order.orderDetails', 'orderDetails')
         .where('order.state IN (:...states)', { states: ['Enviada', 'En progreso']})
         .getMany();
     }
@@ -154,11 +147,14 @@ export class PurchaseorderService {
                 totalQuantity += productLot[j].quantity
             }
             if(totalQuantity<=10){
-                productAlert[productAlert.length]={
-                    "codProduct":products.products[i].codProduct,
-                    "nameProduct":products.products[i].nameProduct,
-                    "laboratory": products.products[i].laboratory,
-                    "quantity": totalQuantity
+                if(await this.checkRelacionOrderAlert(products.products[i].codProduct)){
+                    console.log("Agregue este codigo: ",products.products[i].codProduct)
+                    productAlert[productAlert.length]={
+                        "codProduct":products.products[i].codProduct,
+                        "nameProduct":products.products[i].nameProduct,
+                        "laboratory": products.products[i].laboratory,
+                        "quantity": totalQuantity
+                    }
                 }
             }
         }
@@ -167,6 +163,19 @@ export class PurchaseorderService {
         }else{
             return {"products":productAlert,"success":true}
         }
+    }
+
+    async checkRelacionOrderAlert(codProduct){
+        const orders = await this.getOrderInStateEnvOrPro()
+        for(let i=0;i<orders.length;i++){
+            const details = orders[i].orderDetails
+            for(let j=0;j<details.length;j++){
+                if(details[j].codProduct==codProduct){
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     async acceptViewOrder(){
@@ -196,5 +205,24 @@ export class PurchaseorderService {
         return nameSuppliers
     }
 
+    async changeStateInProgress(codOrder,info:InProgrees){
+        try {
+            const order = await this.getOrder(codOrder)
+        const details = order.orderDetails
+        for(let i=0;i<details.length;i++){
+            for(let j=0;j<info.products.length;j++){
+                const product = await this.productService.getProduct({"nameProduct":info.products[j].nameProduct,
+                    "laboratory":info.products[j].laboratory})
+                if(details[i].codProduct==product.product.codProduct){
+                    this.orderDetailsService.updateOrderDetails(codOrder,product.product.codProduct,info.products[j].price)
+                }
+            }
+        }
+        this.purchaseOrderRepository.update(codOrder,{state:info.state})
+        return {"success":true}
+        } catch (error) {
+            return {"succes":false}   
+        }
+    }
 
 }

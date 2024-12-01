@@ -15,4 +15,17 @@ export class FormatGetOrders{
     "dateRegister":Date
     "state":string
     "products":infoGetProductOrders[]
-}   
+}  
+
+
+export class InProgrees{
+    "state":string
+    "products": productInProgrees[]
+}
+
+export class productInProgrees{
+    "nameProduct":string
+    "laboratory":string
+    "quantity":number
+    "price":number
+}
