@@ -41,5 +41,5 @@ export class getReportSpecifyProduct{
     "totalPay": number
     "subTotal": number
     "iva": number
-    "details": formatDetails
+    "details":formatDetails[]
 }

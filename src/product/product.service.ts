@@ -48,29 +48,33 @@ export class ProductService {
     }
 
     async getProductsWithLaboratory(){
-        const products = await this.productRepository.find({
-            relations:['laboratory']
-        });
-        const listaSinDuplicados = [
-            ...new Map(products.map(item => [item.nameProduct, item])).values()
-          ];
-        const formatProducts:formatProductsWithLaboratory[] = []
-        for(let i=0;i<listaSinDuplicados.length;i++){
-            const name = listaSinDuplicados[i].nameProduct
-            const laboratories =[]
-            for(let j=0;j<products.length;j++){
-                if(name==products[j].nameProduct){
-                    laboratories[laboratories.length] ={
-                        "laboratory": products[j].laboratory.nameLaboratory
+        try {
+            const products = await this.productRepository.find({
+                relations:['laboratory']
+            });
+            const listaSinDuplicados = [
+                ...new Map(products.map(item => [item.nameProduct, item])).values()
+              ];
+            const formatProducts:formatProductsWithLaboratory[] = []
+            for(let i=0;i<listaSinDuplicados.length;i++){
+                const name = listaSinDuplicados[i].nameProduct
+                const laboratories =[]
+                for(let j=0;j<products.length;j++){
+                    if(name==products[j].nameProduct){
+                        laboratories[laboratories.length] ={
+                            "laboratory": products[j].laboratory.nameLaboratory
+                        }
                     }
                 }
+                formatProducts[i] = {
+                    "nameProduct":listaSinDuplicados[i].nameProduct,
+                    "laboratories":laboratories
+                }
             }
-            formatProducts[i] = {
-                "nameProduct":listaSinDuplicados[i].nameProduct,
-                "laboratories":laboratories
-            }
+            return {"products":formatProducts,"success":true}   
+        } catch (error) {
+            return {"success":false}
         }
-        return {"products":formatProducts,"success":true}
     }
 
     async getNamesLaboratories(nameSupplier){

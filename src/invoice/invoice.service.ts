@@ -126,12 +126,12 @@ export class InvoiceService {
         try {
             const formatGeneralSell:getReportSpecifyProduct[]=[]
             for(let i=0;i<invoices.length;i++){
-                let formatDetails:formatDetails = null
+                let formatDetails:formatDetails[] = []
                 const detailInvoice = invoices[i].detailsInvoice
                 for(let j=0;j<detailInvoice.length;j++){
                     const product = await this.productService.getProduct({"nameProduct":nameProduct,"laboratory":laboratory})
                     if(detailInvoice[j].product.codProduct===product.product.codProduct){
-                        formatDetails ={
+                        formatDetails[formatDetails.length] ={
                             "nameProduct":detailInvoice[j].product.nameProduct,
                             "laboratory":detailInvoice[j].product.laboratory.nameLaboratory,
                             "quantity":detailInvoice[j].quantity,
