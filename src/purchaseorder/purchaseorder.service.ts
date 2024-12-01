@@ -181,16 +181,20 @@ export class PurchaseorderService {
     async acceptViewOrder(){
         const products = await this.generatedAlertMinStock()
         const productOrder = []
-        for(let i =0;i<products.products.length;i++){
-            const product = await this.productService.getProduct({"nameProduct":products.products[i].nameProduct,
-                "laboratory":products.products[i].laboratory})
-            productOrder[i] = {
-                "nameProduct":product.product.nameProduct,
-                "laboratory":product.product.laboratory.nameLaboratory,
-                "suppliers": await this.searchSuppliersProduct(product.product.laboratory.nameLaboratory)
+        if(products.success){
+            for(let i =0;i<products.products.length;i++){
+                const product = await this.productService.getProduct({"nameProduct":products.products[i].nameProduct,
+                    "laboratory":products.products[i].laboratory})
+                productOrder[i] = {
+                    "nameProduct":product.product.nameProduct,
+                    "laboratory":product.product.laboratory.nameLaboratory,
+                    "suppliers": await this.searchSuppliersProduct(product.product.laboratory.nameLaboratory)
+                }
             }
+            return {"products":productOrder,"success":true}
+        }else{
+            return {"success":false}
         }
-        return {"products":productOrder,"success":true}
     }
 
     async searchSuppliersProduct(nameLaboratory){
