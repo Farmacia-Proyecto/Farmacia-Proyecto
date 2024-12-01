@@ -40,3 +40,8 @@ export class AlertMinStock{
     "laboratory":string
     "quantity":number
 }
+
+export class formatProductsWithLaboratory{
+    "nameProduct":string
+    "laboratories":string[]
+}

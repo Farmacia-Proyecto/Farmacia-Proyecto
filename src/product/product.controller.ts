@@ -9,7 +9,6 @@ export class ProductController {
 
     constructor(private productService:ProductService){}
 
-    
 
     @Get()
     async getProducts(){
@@ -34,6 +33,12 @@ export class ProductController {
     @Put(':codProduct')
     updateProduct(@Param('codProduct',ParseIntPipe) codProduct:number,@Body() infoProduct:UpdateProduct){
         return this.productService.updateProduct(codProduct,infoProduct)
+    }
+
+    @Get("/productsReport")
+    async getProductsReport(){
+        console.log( await this.productService.getProductsWithLaboratory())
+        return this.productService.getProductsWithLaboratory()
     }
 
 }

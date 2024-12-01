@@ -2,7 +2,7 @@ import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import {  CreateProduct, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
+import {  CreateProduct, formatProductsWithLaboratory, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
 import { LotService } from 'src/lot/lot.service';
 import { ProductslotService } from '../productsLot/productslot.service';
 import { CreateProductsLot } from '../productsLot/dto/create-productslot.dto';
@@ -45,6 +45,31 @@ export class ProductService {
             }
         }
         return {"products":info,"success":true}
+    }
+
+    async getProductsWithLaboratory(){
+        const products = await this.productRepository.find({
+            relations:['laboratory']
+        });
+        const listaSinDuplicados = [
+            ...new Map(products.map(item => [item.nameProduct, item])).values()
+          ];
+        const formatProducts:formatProductsWithLaboratory[] = []
+        for(let i=0;i<listaSinDuplicados.length;i++){
+            const laboratories =[]
+            for(let j=0;j<products.length;i++){
+                if(listaSinDuplicados[i].nameProduct===products[j].nameProduct){
+                    laboratories[laboratories.length] ={
+                        "laboratory": products[j].laboratory.nameLaboratory
+                    }
+                }
+            }
+            formatProducts[i] = {
+                "nameProduct":listaSinDuplicados[i].nameProduct,
+                "laboratories":laboratories
+            }
+        }
+        return {"products":formatProducts,"success":true}
     }
 
     async getNamesLaboratories(nameSupplier){
