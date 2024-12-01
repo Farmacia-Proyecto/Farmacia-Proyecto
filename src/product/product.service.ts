@@ -56,9 +56,10 @@ export class ProductService {
           ];
         const formatProducts:formatProductsWithLaboratory[] = []
         for(let i=0;i<listaSinDuplicados.length;i++){
+            const name = listaSinDuplicados[i].nameProduct
             const laboratories =[]
-            for(let j=0;j<products.length;i++){
-                if(listaSinDuplicados[i].nameProduct===products[j].nameProduct){
+            for(let j=0;j<products.length;j++){
+                if(name==products[j].nameProduct){
                     laboratories[laboratories.length] ={
                         "laboratory": products[j].laboratory.nameLaboratory
                     }

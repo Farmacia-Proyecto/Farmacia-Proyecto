@@ -4,7 +4,7 @@ import { CreateProduct, UpdateProduct } from './dto/create-product.dto';
 import { AuthGuard } from 'src/login/login.guard';
 
 @Controller('products')
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 export class ProductController {
 
     constructor(private productService:ProductService){}
