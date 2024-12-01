@@ -5,13 +5,16 @@ import { Repository } from 'typeorm';
 import { CreateInvoice } from './dto/invoice.dto';
 import { DetailsinvoiceService } from 'src/detailsinvoice/detailsinvoice.service';
 import { PersonService } from 'src/person/person.service';
+import { formatDetails, getReportGeneral, infoReportGeneralSell, infoReportSpecificProductSell } from './dto/reports.dto';
+import { LaboratoryService } from 'src/laboratory/laboratory.service';
 
 @Injectable()
 export class InvoiceService {
 
     constructor(@InjectRepository(Invoice) private invoiceRepository:Repository<Invoice>,
     private detailsInvoiceService:DetailsinvoiceService,
-    private personService:PersonService
+    private personService:PersonService,
+    private laboratoryService:LaboratoryService
     ){}
 
     async getInvoices(){
@@ -44,6 +47,64 @@ export class InvoiceService {
      async generatedCodInvoice(){
         const size = await this.getInvoices()
         return  size.length + 1
+    }
+
+
+    async reportGeneralSell(rangDate:infoReportGeneralSell){
+        const startDate = rangDate.startDate
+        const finalDate = rangDate.finalDate
+        const invoices = await this.invoiceRepository
+        .createQueryBuilder('invoice')
+        .leftJoinAndSelect('invoice.person','person')
+        .leftJoinAndSelect('invoice.detailsInvoice','detailsInvoice')
+        .leftJoinAndSelect('detailsInvoice.product','product')
+        .leftJoinAndSelect('product.laboratory','laboratory')
+        .where('invoice.date BETWEEN :startDate AND :finalDate', { 
+            startDate,
+            finalDate
+        })
+        .getMany();
+        return this.formatGeneralSell(invoices)
+    }
+
+    async formatGeneralSell(invoices:Invoice[]){
+        try {
+            const formatGeneralSell:getReportGeneral[]=[]
+            for(let i=0;i<invoices.length;i++){
+                const formatDetails:formatDetails[]=[]
+                const detailInvoice = invoices[i].detailsInvoice
+                for(let j=0;j<detailInvoice.length;j++){
+                    formatDetails[j] ={
+                        "nameProduct":detailInvoice[j].product.nameProduct,
+                        "laboratory":detailInvoice[j].product.laboratory.nameLaboratory,
+                        "quantity":detailInvoice[j].quantity,
+                        "totalPrice":detailInvoice[j].price,
+                        "unitPrice":detailInvoice[j].product.price
+                    } 
+                }
+                formatGeneralSell[i] = {
+                    "codInvoice":invoices[i].codInvoice,
+                    "date":invoices[i].date,
+                    "documentClient":invoices[i].documentClient,
+                    "namePerson": invoices[i].person.namePerson +" "+invoices[i].person.lastNamePerson,
+                    "documentPerson": invoices[i].person.document,
+                    "typePayment": invoices[i].typePayment,
+                    "subTotal": invoices[i].subTotal,
+                    "iva": invoices[i].iva,
+                    "totalPay":invoices[i].totalPay,
+                    "details": formatDetails
+                }
+            }
+            return {"invoices":formatGeneralSell,"success":true}
+        } catch (error) {
+            return {"success":false}   
+        }
+    }
+
+    async reportSpecificPoductSell(infoReportSpecifucProductSell:infoReportSpecificProductSell){
+        const startDate = infoReportSpecifucProductSell.startDate
+        const finalDate = infoReportSpecifucProductSell.finalDate
+        const invoices = await this.invoiceRepository
     }
 
 }

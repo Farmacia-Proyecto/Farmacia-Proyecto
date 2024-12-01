@@ -128,7 +128,7 @@ export class PurchaseorderService {
     }
 
     getOrderInStateEnvOrPro(){
-        return this.purchaseOrderRepository
+            return this.purchaseOrderRepository
         .createQueryBuilder('order')
         .leftJoinAndSelect('order.orderDetails', 'orderDetails')
         .where('order.state IN (:...states)', { states: ['Enviada', 'En progreso']})
@@ -152,7 +152,6 @@ export class PurchaseorderService {
             }
             if(totalQuantity<=10){
                 if(await this.checkRelacionOrderAlert(products.products[i].codProduct)){
-                    console.log("Agregue este codigo: ",products.products[i].codProduct)
                     productAlert[productAlert.length]={
                         "codProduct":products.products[i].codProduct,
                         "nameProduct":products.products[i].nameProduct,
@@ -240,15 +239,23 @@ export class PurchaseorderService {
         }
     }
 
+
     async changeStateRecive(codOrder,info:Recive){
-        this.orderDetailsService.checkOrderRecive(codOrder,info.products)
-        for(let i=0;i<info.products.length;i++){
-            const product = await this.productService.getProduct({"nameProduct":info.products[i].nameProduct,
-                "laboratory":info.products[i].laboratory
-            })
-            const detailOrder = this.orderDetailsService.searchOrderDetails(codOrder,product.product.codProduct)
-            this.productService.createLotWithOder(info.products[i],(await detailOrder).price)
+        try {
+            this.orderDetailsService.checkOrderRecive(codOrder,info.products)
+            for(let i=0;i<info.products.length;i++){
+                const product = await this.productService.getProduct({"nameProduct":info.products[i].nameProduct,
+                    "laboratory":info.products[i].laboratory
+                })
+                const detailOrder = this.orderDetailsService.searchOrderDetails(codOrder,product.product.codProduct)
+                this.productService.createLotWithOder(info.products[i],(await detailOrder).price,codOrder,info.userName)
+            }
+            this.purchaseOrderRepository.update(codOrder,{state:info.state})
+            return {"success":true}
+        } catch (error) {
+            return {"success":false}
         }
+        
     }
 
 }

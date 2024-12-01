@@ -4,6 +4,7 @@ import { OrderDetails } from './orderdetails.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDetails } from './dto/orderdetails.dto';
 import { ProductsRecive } from 'src/purchaseorder/dto/pucharseorder.dto';
+import { ProductService } from 'src/product/product.service';
 
 @Injectable()
 export class OrderdetailsService {
@@ -54,8 +55,12 @@ export class OrderdetailsService {
 
     async checkOrderRecive(codOrder,products:ProductsRecive[]){
         let check:boolean = false
-        const order = await this.orderDetailsRepository.findBy({
-            codOrder:codOrder
+        const order = await this.orderDetailsRepository.find({
+            where:{
+                codOrder:codOrder
+            },
+            relations:['product']
+            
         })
         for(let i=0;i<order.length;i++){
             for(let j=0;j<products.length;j++){
@@ -69,6 +74,4 @@ export class OrderdetailsService {
             }
         }
     }
-
-
 }

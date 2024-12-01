@@ -33,6 +33,7 @@ export class productInProgrees{
 export class Recive{
     "state":string
     "products":ProductsRecive[]
+    "userName":string
 }
 
 export class ProductsRecive{

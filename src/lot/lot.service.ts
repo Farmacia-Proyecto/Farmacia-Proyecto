@@ -31,11 +31,12 @@ export class LotService {
     async createLotOrder(infoLot:CreateLot){
         const date = new Date()
         const lotFound = await this.getLot(infoLot.codLot)
+        const person = await this.personService.searchPersonByUserName(infoLot.userName)
         if(lotFound==null){
             const lot = {
                 codLot:infoLot.codLot,
                 registerDate:date,
-                person: await this.personService.searchPersonByUserName(this.request.user.userName),
+                person: person,
                 purchaseOrder: await this.purchaseOrderService.getOrder(infoLot.codOrder)
             }
             const newLot = this.lotRepository.create(lot)

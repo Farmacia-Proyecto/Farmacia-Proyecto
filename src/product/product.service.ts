@@ -2,7 +2,7 @@ import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
-import { AlertMinStock, CreateProduct, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
+import {  CreateProduct, infoGetProduct, SearchProduct, UpdateProduct } from './dto/create-product.dto';
 import { LotService } from 'src/lot/lot.service';
 import { ProductslotService } from '../productsLot/productslot.service';
 import { CreateProductsLot } from '../productsLot/dto/create-productslot.dto';
@@ -12,7 +12,6 @@ import { SuppliersService } from 'src/suppliers/suppliers.service';
 import { Laboratory } from 'src/laboratory/laboratory.entity';
 import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
 import { CreateProductsSupplierDto } from 'src/productssupplier/dto/productssupplier.dto';
-import { LaboratorySuppliers } from 'src/laboratorysuppliers/laboratorysuppliers.entity';
 import { ProductsRecive } from 'src/purchaseorder/dto/pucharseorder.dto';
 
 @Injectable()
@@ -240,14 +239,14 @@ export class ProductService {
         return false
     }
 
-    async createLotWithOder(infoProduct:ProductsRecive,priceBuy){
+    async createLotWithOder(infoProduct:ProductsRecive,priceBuy,codOrder,userName){
         const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
             "laboratory":infoProduct.laboratory})
         const checkProduct = await this.getProductForCod(productFound.product.codProduct)
         if(checkProduct!=null){
             const checkLot = await this.lotService.getLot(infoProduct.codLot)
             if(checkLot==null){
-                await this.lotService.createLot({"codLot":infoProduct.codLot})
+                await this.lotService.createLotOrder({"codLot":infoProduct.codLot,"codOrder":codOrder,"userName":userName})
                 productFound.product.price = infoProduct.price
                 this.productRepository.save(productFound.product)
                 const productLot:CreateProductsLot = {
@@ -262,4 +261,5 @@ export class ProductService {
             }
         }
     }
+
 }  
