@@ -33,4 +33,9 @@ export class PurchaseorderController {
         return this.purchaseOrderService.changeStateInProgress(codOrder,info)
     }
 
+    @Put("/recive:/codOrder")
+    updateRecive(){
+
+    }
+
 }
