@@ -37,7 +37,6 @@ export class ProductController {
 
     @Get("/productsReport")
     async getProductsReport(){
-        console.log( await this.productService.getProductsWithLaboratory())
         return this.productService.getProductsWithLaboratory()
     }
 
