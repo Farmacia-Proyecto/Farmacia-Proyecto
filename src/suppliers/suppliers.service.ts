@@ -52,8 +52,8 @@ export class SuppliersService {
 
     async searchSupplier(suplier:searchSupplier){
         if(suplier.nameSupplier){
-            const supliers = await this.supplierRepository.createQueryBuilder('person')
-            .where('person.namePerson LIKE :namePerson', { nameSupplier: `%${suplier.nameSupplier}%` })
+            const supliers = await this.supplierRepository.createQueryBuilder('supplier')
+            .where('supplier.nameSupplier LIKE :nameSupplier', { nameSupplier: `%${suplier.nameSupplier}%` })
             .getMany();
             let i =0;
             let info = []
