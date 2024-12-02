@@ -231,14 +231,18 @@ export class ProductService {
     }
 
     async updateProduct(codProduct,infoUpdate:UpdateProduct){
-        const updateProduct = {
-            "nameProduct":infoUpdate.nameProduct,
-            "describeProduct":infoUpdate.describeProduct,
-            "price":infoUpdate.priceSell,
-            "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory),
-            "image":infoUpdate.image
+        try {
+            const updateProduct = {
+                "nameProduct":infoUpdate.nameProduct,
+                "describeProduct":infoUpdate.describeProduct,
+                "price":infoUpdate.priceSell,
+                "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory),
+                "image":infoUpdate.image
+            }
+            return await this.productRepository.update(codProduct,updateProduct)
+        } catch (error) {
+            return {"success":false}
         }
-        return await this.productRepository.update(codProduct,updateProduct)
     }
 
     formatNames(string:string){
