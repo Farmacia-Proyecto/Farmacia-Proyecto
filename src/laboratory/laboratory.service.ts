@@ -50,13 +50,18 @@ export class LaboratoryService {
 
 
     async createLaboratory(nameLaboratory){
-        const laboratoryFound = await this.getLaboratory(nameLaboratory);
+        try {
+            const laboratoryFound = await this.getLaboratory(nameLaboratory);
         if(!laboratoryFound){
             const newLaboratory = this.laboratoryRepository.create({"codLaboratory": await this.generatedCodLaboratory(),
                 "nameLaboratory":nameLaboratory});
             return await this.laboratoryRepository.save(newLaboratory),{"success":true};   
         }
         return HttpStatus.BAD_REQUEST,{"success":false}
+        } catch (error) {
+            return {"success":false}
+        }
+        
     }
 
     async updateLaboratory(nit,infoLaboratory:UpdateLaboratoryDto){

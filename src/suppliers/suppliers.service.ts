@@ -86,15 +86,19 @@ export class SuppliersService {
 
 
     async addLaboratories(nit,laboratories:CreateLaboratoryDto[]){
-        for(let i=0;i<laboratories.length;i++){
-            const laboratoryFound = await this.laboratoryService.getLaboratory(laboratories[i].nameLaboratory)
-            if(laboratoryFound==null){
-                await this.laboratoryService.createLaboratory(laboratories[i].nameLaboratory)
-                const laboratory = await this.laboratoryService.getLaboratory(laboratories[i].nameLaboratory)
-                this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratory.codLaboratory,"nit":nit})
-            }else{
-                this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratoryFound.codLaboratory,"nit":nit})
+        try {
+            for(let i=0;i<laboratories.length;i++){
+                const laboratoryFound = await this.laboratoryService.getLaboratory(laboratories[i].nameLaboratory)
+                if(laboratoryFound==null){
+                    await this.laboratoryService.createLaboratory(laboratories[i].nameLaboratory)
+                    const laboratory = await this.laboratoryService.getLaboratory(laboratories[i].nameLaboratory)
+                    this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratory.codLaboratory,"nit":nit})
+                }else{
+                    this.laboratorySuppliersService.addLaboratorySupplier({"codLaboratory":laboratoryFound.codLaboratory,"nit":nit})
+                }
             }
+        } catch (error) {
+            return {"success":false}   
         }
     }
 
