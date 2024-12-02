@@ -36,7 +36,8 @@ export class PurchaseorderService {
     async formatGetOrders(){
         try {
             const orders = await this.purchaseOrderRepository.find({
-                relations:['supplier']
+                relations:['supplier'],
+                order:{orderDate:"ASC"}
             })
             const format:FormatGetOrders[] = []
             for(let i=0;i<orders.length;i++){
