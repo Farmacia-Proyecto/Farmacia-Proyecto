@@ -166,7 +166,7 @@ export class ProductService {
                                 }   
                                 const newProduct = this.productRepository.create(product)
                                 await this.productRepository.save(newProduct)
-                                await this.lotService.createLot({"codLot":infoProduct.codLot})
+                                await this.lotService.createLot({"codLot":infoProduct.codLot,"userName":infoProduct.userName})
                                 const productLot:CreateProductsLot = {
                                     "codProduct":infoProduct.codProduct,
                                     "codLot": infoProduct.codLot,

@@ -10,6 +10,7 @@ export class CreateProduct{
     laboratory:string
     nameSupplier:string
     image:string
+    userName:string
 }
 
 export class UpdateProduct{
