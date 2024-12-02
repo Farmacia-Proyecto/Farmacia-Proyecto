@@ -16,5 +16,5 @@ export class updateSupplier{
 }
 
 export class searchSupplier{
-    nameSupplier:string
+    nameProvider:string
 }

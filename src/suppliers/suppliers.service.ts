@@ -52,9 +52,9 @@ export class SuppliersService {
 
     async searchSupplier(suplier:searchSupplier){
         try {
-            if(suplier.nameSupplier){
+            if(suplier.nameProvider){
                 const supliers = await this.supplierRepository.createQueryBuilder('supplier')
-                .where('supplier.nameSupplier LIKE :nameSupplier', { nameSupplier: `%${suplier.nameSupplier}%` })
+                .where('supplier.nameSupplier LIKE :nameSupplier', { nameSupplier: `%${suplier.nameProvider}%` })
                 .getMany();
                 let i =0;
                 let info = []
@@ -68,7 +68,7 @@ export class SuppliersService {
                     }
                     i++
                 }
-                return {"users":info,"success":true}
+                return {"providers":info,"success":true}
             }
         } catch (error) {
             return {"success":false}
