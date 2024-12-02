@@ -47,7 +47,7 @@ export class LotService {
     async createLot(infoLot:CreateLot){
         const date = new Date()
         const lotFound = await this.getLot(infoLot.codLot)
-        const person = await this.personService.searchPersonByUserName(this.request.user.userName)
+        const person = await this.personService.searchPersonByUserName(infoLot.userName)
         if(lotFound==null){
             const lot = {
                 codLot:infoLot.codLot,
