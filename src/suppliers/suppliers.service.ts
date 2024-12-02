@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Supplier } from './supliers.entity';
 import { Repository } from 'typeorm';
-import { CreateSupplierDto, updateSupplier } from './dto/supplier.dto';
+import { CreateSupplierDto, searchSupplier, updateSupplier } from './dto/supplier.dto';
 import { LaboratoryService } from 'src/laboratory/laboratory.service';
 import { CreateLaboratoryDto } from 'src/laboratory/dto/create-laboratory.dto';
 import { LaboratorysuppliersService } from 'src/laboratorysuppliers/laboratorysuppliers.service';
@@ -48,6 +48,27 @@ export class SuppliersService {
                 nameSupplier:nameSupplier
             }
         })
+    }
+
+    async searchSupplier(suplier:searchSupplier){
+        if(suplier.nameSupplier){
+            const supliers = await this.supplierRepository.createQueryBuilder('person')
+            .where('person.namePerson LIKE :namePerson', { nameSupplier: `%${suplier.nameSupplier}%` })
+            .getMany();
+            let i =0;
+            let info = []
+            while(i<supliers.length){
+                info[i]= {
+                    "nit":supliers[i].nit,
+                    "nameSupplier": supliers[i].nameSupplier,
+                    "phoneSupplier": supliers[i].phoneSupplier,
+                    "emailSupplier": supliers[i].emailSupplier,
+                    "laboratories": await this.NamesLaboratories(supliers[i].nit)
+                }
+                i++
+            }
+            return {"users":info,"success":true}
+        }
     }
 
     async createSupplier(infoSupplier:CreateSupplierDto){

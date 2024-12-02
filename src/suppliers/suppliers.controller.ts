@@ -25,4 +25,10 @@ export class SuppliersController {
         return this.supplierService.updateSupplier(nit,info)
     }
 
+    @Post("/search")
+    async getPerson(@Body() supplier){
+        return await this.supplierService.searchSupplier(supplier)
+     }
+
+     
 }

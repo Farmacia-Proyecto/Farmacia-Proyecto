@@ -239,6 +239,10 @@ export class PurchaseorderService {
         }
     }
 
+    async calculateTotalPayOrder(codOrder){
+        
+    }
+
 
     async changeStateRecive(codOrder,info:Recive){
         try {

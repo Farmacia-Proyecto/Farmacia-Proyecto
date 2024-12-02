@@ -14,3 +14,7 @@ export class updateSupplier{
     emailSupplier:string
     laboratories:CreateLaboratoryDto[]
 }
+
+export class searchSupplier{
+    nameSupplier:string
+}
