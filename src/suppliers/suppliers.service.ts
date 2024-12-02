@@ -51,23 +51,27 @@ export class SuppliersService {
     }
 
     async searchSupplier(suplier:searchSupplier){
-        if(suplier.nameSupplier){
-            const supliers = await this.supplierRepository.createQueryBuilder('supplier')
-            .where('supplier.nameSupplier LIKE :nameSupplier', { nameSupplier: `%${suplier.nameSupplier}%` })
-            .getMany();
-            let i =0;
-            let info = []
-            while(i<supliers.length){
-                info[i]= {
-                    "nit":supliers[i].nit,
-                    "nameSupplier": supliers[i].nameSupplier,
-                    "phoneSupplier": supliers[i].phoneSupplier,
-                    "emailSupplier": supliers[i].emailSupplier,
-                    "laboratories": await this.NamesLaboratories(supliers[i].nit)
+        try {
+            if(suplier.nameSupplier){
+                const supliers = await this.supplierRepository.createQueryBuilder('supplier')
+                .where('supplier.nameSupplier LIKE :nameSupplier', { nameSupplier: `%${suplier.nameSupplier}%` })
+                .getMany();
+                let i =0;
+                let info = []
+                while(i<supliers.length){
+                    info[i]= {
+                        "nit":supliers[i].nit,
+                        "nameSupplier": supliers[i].nameSupplier,
+                        "phoneSupplier": supliers[i].phoneSupplier,
+                        "emailSupplier": supliers[i].emailSupplier,
+                        "laboratories": await this.NamesLaboratories(supliers[i].nit)
+                    }
+                    i++
                 }
-                i++
+                return {"users":info,"success":true}
             }
-            return {"users":info,"success":true}
+        } catch (error) {
+            return {"success":false}
         }
     }
 
