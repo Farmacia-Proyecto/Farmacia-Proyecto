@@ -145,88 +145,92 @@ export class ProductService {
     }
 
     async createProduct(infoProduct:CreateProduct){
-        const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
-            "laboratory":infoProduct.laboratory})
-        if(productFound.product==null){
-            if(infoProduct.quantity>0){
-                const checkProduct = await this.getProductForCod(infoProduct.codProduct)
-                if(checkProduct==null){
-                    const supplier = await this.supplierService.getSupplier(infoProduct.nameSupplier)
-                    if(supplier!=null){
-                        const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
-                        if(this.checkLaboratory(supplier.nit,laboratory)){
-                            const product = {
-                                codProduct:infoProduct.codProduct,
-                                nameProduct: this.formatNames(infoProduct.nameProduct).trim(),
-                                describeProduct:infoProduct.describeProduct,
-                                price:infoProduct.priceSell,
-                                laboratory: laboratory,
-                                image:infoProduct.image
-                            }   
-                            const newProduct = this.productRepository.create(product)
-                            await this.productRepository.save(newProduct)
-                            await this.lotService.createLot({"codLot":infoProduct.codLot})
-                            const productLot:CreateProductsLot = {
-                                "codProduct":infoProduct.codProduct,
-                                "codLot": infoProduct.codLot,
-                                "expirationDate":infoProduct.expirationDate,
-                                "price":infoProduct.priceBuy,
-                                "quantity":infoProduct.quantity,
-                                "availability":true
-                            }
-                            const productsSupplier:CreateProductsSupplierDto = {
-                                "nit":supplier.nit,
-                                "codProduct":infoProduct.codProduct
-                            }
-                            this.productsSupplierService.createProductsSupplier(productsSupplier)
-                            return await this.productLotService.createProductLot(productLot),{"success":true}  
-                        }else{
-                            return HttpStatus.BAD_REQUEST,{"warning":"Este laboratorio no esta asociado al proveedor especificado",
-                                "success":false}
-                        }
-                    }else{
-                        return HttpStatus.BAD_REQUEST,{"warning":"El proveedor no esta registrado en el sistema",
-                            "success":false}
-                    }   
-                }else{
-                    return HttpStatus.BAD_REQUEST,{"warning":"El codigo de producto que ingresaste ya esta asociado a un producto",
-                        "success":false}
-                }    
-            }else{
-                return HttpStatus.BAD_REQUEST,{"warning":"La cantidad del producto no puede ser 0","success":false}
-            }
-        }else{
-            const checkProduct = await this.getProductForCod(productFound.product.codProduct)
-            if(checkProduct!=null){
-                const checkLot = await this.lotService.getLot(infoProduct.codLot)
-                if(checkLot==null){
-                    const supplier = await this.supplierService.getSupplier(infoProduct.nameSupplier)
-                    if(supplier!=null){
-                        const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
-                        if(this.checkLaboratory(supplier.nit,laboratory)){
-                            if(this.checkProductSupplier(supplier.nit,productFound.product)){
+        try {
+            const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
+                "laboratory":infoProduct.laboratory})
+            if(productFound.product==null){
+                if(infoProduct.quantity>0){
+                    const checkProduct = await this.getProductForCod(infoProduct.codProduct)
+                    if(checkProduct==null){
+                        const supplier = await this.supplierService.getSupplier(infoProduct.nameSupplier)
+                        if(supplier!=null){
+                            const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
+                            if(this.checkLaboratory(supplier.nit,laboratory)){
+                                const product = {
+                                    codProduct:infoProduct.codProduct,
+                                    nameProduct: this.formatNames(infoProduct.nameProduct).trim(),
+                                    describeProduct:infoProduct.describeProduct,
+                                    price:infoProduct.priceSell,
+                                    laboratory: laboratory,
+                                    image:infoProduct.image
+                                }   
+                                const newProduct = this.productRepository.create(product)
+                                await this.productRepository.save(newProduct)
                                 await this.lotService.createLot({"codLot":infoProduct.codLot})
-                                productFound.product.price = infoProduct.priceSell
-                                productFound.product.describeProduct = infoProduct.describeProduct
-                                this.productRepository.save(productFound.product)
                                 const productLot:CreateProductsLot = {
-                                    "codProduct":checkProduct.codProduct,
+                                    "codProduct":infoProduct.codProduct,
                                     "codLot": infoProduct.codLot,
                                     "expirationDate":infoProduct.expirationDate,
                                     "price":infoProduct.priceBuy,
                                     "quantity":infoProduct.quantity,
                                     "availability":true
                                 }
-                                return await this.productLotService.createProductLot(productLot),{"success":true}
+                                const productsSupplier:CreateProductsSupplierDto = {
+                                    "nit":supplier.nit,
+                                    "codProduct":infoProduct.codProduct
+                                }
+                                this.productsSupplierService.createProductsSupplier(productsSupplier)
+                                return await this.productLotService.createProductLot(productLot),{"success":true}  
+                            }else{
+                                return HttpStatus.BAD_REQUEST,{"warning":"Este laboratorio no esta asociado al proveedor especificado",
+                                    "success":false}
                             }
-                        }
-                    }
+                        }else{
+                            return HttpStatus.BAD_REQUEST,{"warning":"El proveedor no esta registrado en el sistema",
+                                "success":false}
+                        }   
+                    }else{
+                        return HttpStatus.BAD_REQUEST,{"warning":"El codigo de producto que ingresaste ya esta asociado a un producto",
+                            "success":false}
+                    }    
                 }else{
-                    return HttpStatus.BAD_REQUEST,{"warning":"El lote que va a ingresar ya se encuentra registrado","success":false}
+                    return HttpStatus.BAD_REQUEST,{"warning":"La cantidad del producto no puede ser 0","success":false}
                 }
             }else{
-                return HttpStatus.BAD_REQUEST,{"warning":"Verifica el codigo del producto","success":false}
+                const checkProduct = await this.getProductForCod(productFound.product.codProduct)
+                if(checkProduct!=null){
+                    const checkLot = await this.lotService.getLot(infoProduct.codLot)
+                    if(checkLot==null){
+                        const supplier = await this.supplierService.getSupplier(infoProduct.nameSupplier)
+                        if(supplier!=null){
+                            const laboratory = await this.laboratoryService.getLaboratory(infoProduct.laboratory)
+                            if(this.checkLaboratory(supplier.nit,laboratory)){
+                                if(this.checkProductSupplier(supplier.nit,productFound.product)){
+                                    await this.lotService.createLot({"codLot":infoProduct.codLot})
+                                    productFound.product.price = infoProduct.priceSell
+                                    productFound.product.describeProduct = infoProduct.describeProduct
+                                    this.productRepository.save(productFound.product)
+                                    const productLot:CreateProductsLot = {
+                                        "codProduct":checkProduct.codProduct,
+                                        "codLot": infoProduct.codLot,
+                                        "expirationDate":infoProduct.expirationDate,
+                                        "price":infoProduct.priceBuy,
+                                        "quantity":infoProduct.quantity,
+                                        "availability":true
+                                    }
+                                    return await this.productLotService.createProductLot(productLot),{"success":true}
+                                }
+                            }
+                        }
+                    }else{
+                        return HttpStatus.BAD_REQUEST,{"warning":"El lote que va a ingresar ya se encuentra registrado","success":false}
+                    }
+                }else{
+                    return HttpStatus.BAD_REQUEST,{"warning":"Verifica el codigo del producto","success":false}
+                }
             }
+        } catch (error) {
+            return {"success":false}
         }
     }
 
@@ -277,25 +281,29 @@ export class ProductService {
     }
 
     async createLotWithOder(infoProduct:ProductsRecive,priceBuy,codOrder,userName){
-        const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
-            "laboratory":infoProduct.laboratory})
-        const checkProduct = await this.getProductForCod(productFound.product.codProduct)
-        if(checkProduct!=null){
-            const checkLot = await this.lotService.getLot(infoProduct.codLot)
-            if(checkLot==null){
-                await this.lotService.createLotOrder({"codLot":infoProduct.codLot,"codOrder":codOrder,"userName":userName})
-                productFound.product.price = infoProduct.price
-                this.productRepository.save(productFound.product)
-                const productLot:CreateProductsLot = {
-                    "codProduct":checkProduct.codProduct,
-                    "codLot": infoProduct.codLot,
-                    "expirationDate":infoProduct.expirationDate,
-                    "price":priceBuy,
-                    "quantity":infoProduct.quantity,
-                    "availability":true
+        try {
+            const productFound = await this.getProduct({"nameProduct":infoProduct.nameProduct,
+                "laboratory":infoProduct.laboratory})
+            const checkProduct = await this.getProductForCod(productFound.product.codProduct)
+            if(checkProduct!=null){
+                const checkLot = await this.lotService.getLot(infoProduct.codLot)
+                if(checkLot==null){
+                    await this.lotService.createLotOrder({"codLot":infoProduct.codLot,"codOrder":codOrder,"userName":userName})
+                    productFound.product.price = infoProduct.price
+                    this.productRepository.save(productFound.product)
+                    const productLot:CreateProductsLot = {
+                        "codProduct":checkProduct.codProduct,
+                        "codLot": infoProduct.codLot,
+                        "expirationDate":infoProduct.expirationDate,
+                        "price":priceBuy,
+                        "quantity":infoProduct.quantity,
+                        "availability":true
+                    }
+                    return await this.productLotService.createProductLot(productLot),{"success":true}
                 }
-                return await this.productLotService.createProductLot(productLot),{"success":true}
             }
+        } catch (error) {
+            return {"success":false}   
         }
     }
 

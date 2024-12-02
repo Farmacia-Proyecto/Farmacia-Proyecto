@@ -46,8 +46,12 @@ export class UserService {
     }
 
     async recoveryPasswordUser(info:UpdateUserPasswordDto){
-        const password = info.newPassword;
-        return this.userRepository.update(info.userName,{password})
+        try {
+            const password = info.newPassword;
+        return this.userRepository.update(info.userName,{password}),{"success":true}
+        } catch (error) {
+            return {"success":false}   
+        }
     }
 
     async updateUser(userName: string,state){
