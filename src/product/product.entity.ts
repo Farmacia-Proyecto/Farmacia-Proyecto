@@ -16,6 +16,8 @@ export class Product{
     describeProduct:string
     @Column()
     price:number
+    @Column()
+    image:string
 
     @OneToMany(()=>ProductsLot,productLot=>productLot.product)
     productsLot:ProductsLot[]

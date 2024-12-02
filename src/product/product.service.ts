@@ -41,7 +41,8 @@ export class ProductService {
                 describeProduct:products[i].describeProduct,
                 quantity:totalQuantity,
                 priceSell:products[i].price,
-                laboratory: products[i].laboratory.nameLaboratory
+                laboratory: products[i].laboratory.nameLaboratory,
+                image: products[i].image
             }
         }
         return {"products":info,"success":true}
@@ -160,6 +161,7 @@ export class ProductService {
                                 describeProduct:infoProduct.describeProduct,
                                 price:infoProduct.priceSell,
                                 laboratory: laboratory,
+                                image:infoProduct.image
                             }   
                             const newProduct = this.productRepository.create(product)
                             await this.productRepository.save(newProduct)
@@ -233,7 +235,8 @@ export class ProductService {
             "nameProduct":infoUpdate.nameProduct,
             "describeProduct":infoUpdate.describeProduct,
             "price":infoUpdate.priceSell,
-            "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory)
+            "laboratory": await this.laboratoryService.getLaboratory(infoUpdate.laboratory),
+            "image":infoUpdate.image
         }
         return await this.productRepository.update(codProduct,updateProduct)
     }

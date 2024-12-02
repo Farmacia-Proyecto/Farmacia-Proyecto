@@ -9,6 +9,7 @@ export class CreateProduct{
     priceSell:number
     laboratory:string
     nameSupplier:string
+    image:string
 }
 
 export class UpdateProduct{
@@ -16,6 +17,7 @@ export class UpdateProduct{
     describeProduct:string
     laboratory:string
     priceSell:number
+    image?:string
 }
 
 export class infoGetProduct{
