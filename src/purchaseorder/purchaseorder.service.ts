@@ -240,8 +240,14 @@ export class PurchaseorderService {
                 this.orderDetailsService.updateOrderInProgess(codOrder)
                 return {"success":true}
             }else{
-                this.purchaseOrderRepository.update(codOrder,{state:info.state})
-                return {"success":true}
+                const isEmpty = (str: string) => !str || str.trim().length === 0;
+
+                if (isEmpty(info.state)) {
+                    return {"succes":false} 
+                }else{
+                    this.purchaseOrderRepository.update(codOrder,{state:info.state})
+                    return {"success":true}
+                }
             }
         } catch (error) {
             return {"succes":false}   
