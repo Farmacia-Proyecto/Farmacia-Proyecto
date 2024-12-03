@@ -44,8 +44,11 @@ export class ProductslotService {
                 lots[i].quantity = 0
                 lots[i].availability = false
                 this.productsLotRepository.save(lots[i])
+            }else if(tmp<0){
+                return false
             }
         }
+        return true
     }
 
     async getProductLotsForCodLotAndProduct(codProduct,codLot){

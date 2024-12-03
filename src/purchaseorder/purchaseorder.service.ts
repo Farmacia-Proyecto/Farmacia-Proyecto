@@ -170,34 +170,42 @@ export class PurchaseorderService {
     }
 
     async checkRelacionOrderAlert(codProduct){
-        const orders = await this.getOrderInStateEnvOrPro()
-        for(let i=0;i<orders.length;i++){
-            const details = orders[i].orderDetails
-            for(let j=0;j<details.length;j++){
-                if(details[j].codProduct==codProduct){
-                    return false
+        try {
+            const orders = await this.getOrderInStateEnvOrPro()
+            for(let i=0;i<orders.length;i++){
+                const details = orders[i].orderDetails
+                for(let j=0;j<details.length;j++){
+                    if(details[j].codProduct==codProduct){
+                        return false
+                    }
                 }
             }
+            return true
+        } catch (error) {
+            return false   
         }
-        return true
     }
 
     async acceptViewOrder(){
-        const products = await this.generatedAlertMinStock()
-        const productOrder = []
-        if(products.success){
-            for(let i =0;i<products.products.length;i++){
-                const product = await this.productService.getProduct({"nameProduct":products.products[i].nameProduct,
-                    "laboratory":products.products[i].laboratory})
-                productOrder[i] = {
-                    "nameProduct":product.product.nameProduct,
-                    "laboratory":product.product.laboratory.nameLaboratory,
-                    "suppliers": await this.searchSuppliersProduct(product.product.laboratory.nameLaboratory)
+        try {
+            const products = await this.generatedAlertMinStock()
+            const productOrder = []
+            if(products.success){
+                for(let i =0;i<products.products.length;i++){
+                    const product = await this.productService.getProduct({"nameProduct":products.products[i].nameProduct,
+                        "laboratory":products.products[i].laboratory})
+                    productOrder[i] = {
+                        "nameProduct":product.product.nameProduct,
+                        "laboratory":product.product.laboratory.nameLaboratory,
+                        "suppliers": await this.searchSuppliersProduct(product.product.laboratory.nameLaboratory)
+                    }
                 }
+                return {"products":productOrder,"success":true}
+            }else{
+                return {"success":false}
             }
-            return {"products":productOrder,"success":true}
-        }else{
-            return {"success":false}
+        } catch (error) {
+            return {"success":false}   
         }
     }
 
@@ -240,11 +248,6 @@ export class PurchaseorderService {
         }
     }
 
-    async calculateTotalPayOrder(codOrder){
-        
-    }
-
-
     async changeStateRecive(codOrder,info:Recive){
         try {
             this.orderDetailsService.checkOrderRecive(codOrder,info.products)
@@ -259,8 +262,7 @@ export class PurchaseorderService {
             return {"success":true}
         } catch (error) {
             return {"success":false}
-        }
-        
+        }   
     }
 
 }

@@ -35,14 +35,16 @@ export class ProductService {
             for(let j=0;j<productLot.length;j++){
                 totalQuantity += productLot[j].quantity
             }
-            info[i] = {
-                codProduct:products[i].codProduct,
-                nameProduct:products[i].nameProduct,
-                describeProduct:products[i].describeProduct,
-                quantity:totalQuantity,
-                priceSell:products[i].price,
-                laboratory: products[i].laboratory.nameLaboratory,
-                image: products[i].image
+            if(totalQuantity>0){
+                info[info.length] = {
+                    codProduct:products[i].codProduct,
+                    nameProduct:products[i].nameProduct,
+                    describeProduct:products[i].describeProduct,
+                    quantity:totalQuantity,
+                    priceSell:products[i].price,
+                    laboratory: products[i].laboratory.nameLaboratory,
+                    image: products[i].image
+                }
             }
         }
         return {"products":info,"success":true}
@@ -132,14 +134,17 @@ export class ProductService {
             for(let j=0;j<productLot.length;j++){
                 totalQuantity += productLot[j].quantity
             }
-            info[i] = {
+            if(totalQuantity>0){
+            info[info.length] = {
                 codProduct:products[i].codProduct,
                 nameProduct:products[i].nameProduct,
                 describeProduct:products[i].describeProduct,
                 quantity:totalQuantity,
                 priceSell:products[i].price,
-                laboratory: products[i].laboratory.nameLaboratory
+                laboratory: products[i].laboratory.nameLaboratory,
+                image: products[i].image
             }
+        }
         }
         return {"products":info,"success":true}
     }
